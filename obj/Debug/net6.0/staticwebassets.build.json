@@ -1,11 +1,19 @@
 {
   "Version": 1,
-  "Hash": "1UFDIvXOGEULhIwmbtg2sWa6l16p0l3YGl9tHx3wvAQ=",
+  "Hash": "PqvSIkeW+25ZITFt2S1Ji46UC4u/eC/MMu1g4ec9qB8=",
   "Source": "EduSpaceAPI",
   "BasePath": "_content/EduSpaceAPI",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "EduSpaceAPI\\wwwroot",
+      "Source": "EduSpaceAPI",
+      "ContentRoot": "C:\\Users\\Muhammad Subhan\\source\\repos\\EduSpaceAPI\\wwwroot\\",
+      "BasePath": "_content/EduSpaceAPI",
+      "Pattern": "**"
+    }
+  ],
   "Assets": []
 }

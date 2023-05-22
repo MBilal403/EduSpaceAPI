@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33627.172
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EduSpaceAPI", "EduSpaceAPI.csproj", "{46F69C6E-4404-4E97-A908-8250E4858BEA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{46F69C6E-4404-4E97-A908-8250E4858BEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46F69C6E-4404-4E97-A908-8250E4858BEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46F69C6E-4404-4E97-A908-8250E4858BEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46F69C6E-4404-4E97-A908-8250E4858BEA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2B11888D-4FA9-4ACF-855F-34F210EA35DF}
+	EndGlobalSection
+EndGlobal

@@ -53,7 +53,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-    app.UseAuthentication(); // Add this before UseAuthorization()
+app.UseStaticFiles();
+app.UseAuthentication(); // Add this before UseAuthorization()
 app.UseAuthorization();
 
 app.MapControllers();
