@@ -23,11 +23,11 @@ namespace EduSpaceAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly ILogger<AuthController> _logger;   
+        private readonly ILogger<AuthController> _logger;
         private UserRepository _userRepository;
         private JWTGenerator _jwtGenerator;
 
-        public AuthController(JWTGenerator generator,UserRepository userRepository, IWebHostEnvironment webHostEnvironment,ILogger<AuthController> logger ) {
+        public AuthController(JWTGenerator generator, UserRepository userRepository, IWebHostEnvironment webHostEnvironment, ILogger<AuthController> logger) {
             _jwtGenerator = generator;
             _userRepository = userRepository;
             _webHostEnvironment = webHostEnvironment;
@@ -44,17 +44,18 @@ namespace EduSpaceAPI.Controllers
 
         // Post: Auth/UserRole -> with id + Name + desc
         [HttpPost]
-        public IEnumerable<string> UserRoles(string signupDto) // For Testing
+        public IEnumerable<string> GetAllusers() // For Testing
         {
 
-            _logger.LogInformation(signupDto);
+           // _logger.LogInformation(signupDto);
+
             return new string[] { "value1", "value2" };
         }
 
         [HttpPost]
         public IActionResult Login(UserModel loginModel)
         {
-           // _logger.LogInformation(");
+            // _logger.LogInformation(");
             try
             {
                 // Check if the login credentials are valid
@@ -103,7 +104,7 @@ namespace EduSpaceAPI.Controllers
         public string UploadImages(IFormFile file)
         {
             byte[] imageBytes;
-            string defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath,"Uploads", "DefaultImage.jpg");
+            string defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Uploads", "DefaultImage.jpg");
             // Read the image file as a byte array
             if (System.IO.File.Exists(defaultImagePath))
             {
@@ -143,45 +144,45 @@ namespace EduSpaceAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult UserSignup([FromBody] UserModel user)
+        public MyResponse UserSignup([FromForm] UserSignupDto user)
         {
-           //serModel user = JsonConvert.DeserializeObject<UserModel>(dto.userModel);
-            if (user == null)
+            if (user.userModel == null)
             {
-              
-                return Ok("empty");
-            }
-            {
-
-                bool result = _userRepository.InsertUser(user);
-                if (result)
+                return new MyResponse()
                 {
-                    return Ok("User Inserted");
-                }
-                else
-                    return Ok("Not inserted");
-                return Ok("empty");
+                    Message = "Enter the Data Plaese",
+                    IsSuccess = false
+                };
             }
+            else
+            {
+                UserModel model = JsonConvert.DeserializeObject<UserModel>(user.userModel);
+                if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password) || string.IsNullOrEmpty(model.UserRole)) {
+                    return new MyResponse()
+                    {
+                        Message = "Enter the Email, Password & Role is Compulsory",
+                        IsSuccess = false
+                    };
+                }
+                MyResponse response = _userRepository.InsertUser(model);
+                return response;
+            }
+
+
+
         }
 
-
-
-
-
-
-
-
-            [HttpPost]
+        [HttpPost]
         public IActionResult UploadImage(IFormFile file)
         {
-           
+
             if (file == null || file.Length <= 0)
             {
                 return BadRequest("Invalid file.");
             }
 
             // Generate a unique filename
-            string fileName = Guid.NewGuid().ToString()+".pdf"; //+ Path.GetExtension(file.FileName);
+            string fileName = Guid.NewGuid().ToString() + ".pdf"; //+ Path.GetExtension(file.FileName);
 
             // Get the uploads folder path
             string uploadsFolder = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads");
@@ -201,13 +202,12 @@ namespace EduSpaceAPI.Controllers
 
             byte[] filebyte = System.IO.File.ReadAllBytes(filePath);
             System.IO.File.WriteAllBytes(filePath, filebyte);
-           
+
             return Ok($"File uploaded successfully. File path: {filePath} + {filebyte}");
         }
+
+
     }
-
-
-
 
 }
 

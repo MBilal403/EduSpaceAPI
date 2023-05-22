@@ -1,4 +1,5 @@
-﻿using EduSpaceAPI.Models;
+﻿using EduSpaceAPI.Helpers;
+using EduSpaceAPI.Models;
 using EduSpaceAPI.MyDTOs;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -51,13 +52,8 @@ namespace EduSpaceAPI.Repository
             return userId;
         }
         // Inser user to the data base
-        public bool InsertUser(UserModel user)
+        public MyResponse InsertUser(UserModel user)
         {
-           // (user.ImageName != null) ? user.ImageName : GetDefaultImageBytes();
-            if (user  == null) 
-                return false;
-            else
-            {
                 Hashtable parameters = new Hashtable
                 {
                     { "@Email", user.Email },
@@ -65,53 +61,87 @@ namespace EduSpaceAPI.Repository
                     { "@UserRole", user.UserRole },
                     { "@FullName", user.FullName },
                     { "@VerificationCode", user.VerificationCode },
-                    { "@UserImage", user.UserImage   },
+                    { "@UserImage", user.UserImage },
                     { "@ContactNumber", user.ContactNumber }, 
                     { "@IsVerified", user.IsVerified },
                     { "@Address", user.Address },
                     { "@Resume", user.Resume },
-                    { "@ImageName",  user.ImageName  },
+                    { "@ImageName",  user.ImageName },
                     { "@ResumeName", user.ResumeName }
                 };
-                try
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    using (SqlCommand command = new SqlCommand("InsertUser", connection))
                     {
-                        using (SqlCommand command = new SqlCommand("InsertUser", connection))
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        // Set the parameters
+                        foreach (DictionaryEntry entry in parameters)
                         {
-                            command.CommandType = CommandType.StoredProcedure;
-
-                            // Set the parameters
-                            foreach (DictionaryEntry entry in parameters)
+                            string parameterName = (string)entry.Key;
+                            if (parameterName == "@UserImage" || parameterName == "@Resume")
                             {
-                                string parameterName = (string)entry.Key;
-                                if (parameterName == "@UserImage" || parameterName == "@Resume")
-                                {
-                                    object parameterValue = (entry.Value != null) ? entry.Value : GetDefaultImageBytes();
-                                    command.Parameters.Add(parameterName, SqlDbType.VarBinary, -1).Value = DBNull.Value;
+                                object parameterValue = (entry.Value != null) ? entry.Value : GetDefaultImageBytes();
+                                command.Parameters.Add(parameterName, SqlDbType.VarBinary, -1).Value = DBNull.Value;
 
-                                }
-                                else
-                                {
-                                    object parameterValue = (entry.Value != null) ? entry.Value : DBNull.Value;
-                                    command.Parameters.AddWithValue(parameterName, parameterValue);
-                                }
                             }
-                            connection.Open();
-                            command.ExecuteNonQuery();
-                            return true;
+                            else
+                            {
+                                object parameterValue = (entry.Value != null) ? entry.Value : DBNull.Value;
+                                command.Parameters.AddWithValue(parameterName, parameterValue);
+                            }
                         }
+                        connection.Open();
+                        if (connection.State == ConnectionState.Open)
+                        {
+                            int rowsAffected = command.ExecuteNonQuery();
+                            if (rowsAffected == -1)
+                            {
+                                rowsAffected *= -1;
+                                return new MyResponse()
+                                {
+                                    Message = "Rows Effected" + rowsAffected.ToString(),
+                                    IsSuccess = true
+                                };
+                            }
+                            else
+                                return new MyResponse()
+                                {
+                                    Message = "Now Row Effected",
+                                    IsSuccess = false
+                                };
+                        }
+                        else
+                        {
+                            return new MyResponse()
+                            {
+                                Message = "Connection is not Open",
+                                IsSuccess = false
+                            };
+
+                        }
+
                     }
-                }
-                catch (Exception ex)
-                {
-                    // Handle the exception (e.g., log the error, throw a custom exception, etc.)
-                    // You can also rethrow the exception if you want to bubble it up to the caller
-                    // For simplicity, we'll just throw a new exception with the original message
-                    throw new Exception("An error occurred while inserting the user.", ex);
                 }
             }
 
+
+            catch (Exception ex)
+            {
+                // Handle the exception (e.g., log the error, throw a custom exception, etc.)
+                // You can also rethrow the exception if you want to bubble it up to the caller
+                // For simplicity, we'll just throw a new exception with the original message
+                //Connection Auti Close
+                return new MyResponse()
+                {
+                    Message = "Exception Occur Due to " + ex.Message,
+                    IsSuccess = false
+                };
+                throw new Exception("An error occurred while inserting the user.", ex);
+            }
+           
         }
         // Generate Default Image in Byte
         private byte[] GetDefaultImageBytes()
