@@ -2,6 +2,7 @@
 using EduSpaceAPI.Models;
 using EduSpaceAPI.MyDTOs;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System.Collections;
@@ -24,36 +25,65 @@ namespace EduSpaceAPI.Repository
         // Inside UserRepository.cs
 
         // A methid to check User is Authentic
-        public int IsAuthenticateUser(UserModel model)
+        public MyResponse<UserModel> IsAuthenticateUser(LoginModel model)
         {
             int userId = -1; // Default value indicating invalid credentials
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            string role = null;
+            UserModel user = new UserModel();
+            try
             {
-                string query = "SELECT UserId FROM [User] WHERE Email = @Email AND Password = @Password";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
+                using (SqlConnection connection = new SqlConnection(connectionString))
                 {
-                    command.Parameters.AddWithValue("@Email", (model.Email.ToLower() != null) ? model.Email.ToLower() : DBNull.Value);
-                    command.Parameters.AddWithValue("@Password", model.Password);
+                    string query = "SELECT UserId,UserRole,Email,FullName  FROM [User] WHERE Email = @Email AND Password = @Password";
 
-                    connection.Open();
-
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        if (reader.Read())
+                        command.Parameters.AddWithValue("@Email", (model.Email.ToLower() != null) ? model.Email.ToLower() : DBNull.Value);
+                        command.Parameters.AddWithValue("@Password", (model.Password != null) ? model.Password : DBNull.Value);
+
+                        connection.Open();
+
+                        using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            userId  = reader.GetInt32(0); // Assuming UserId is stored as an int in the database
-                            
+                            if (reader.Read())
+                            {
+                                user.UserId = reader.GetInt32(0); // Assuming UserId is stored as an int in the database
+                                user.UserRole = reader.GetString(1);
+                                user.Email = reader.GetString(2);
+                                user.FullName = reader.GetString(3);
+                                return new MyResponse<UserModel>()
+                                {
+                                    Response = user,
+                                    IsSuccess = true
+                                };
+                            }
                         }
                     }
                 }
             }
-
-            return userId;
+            catch (Exception ex)
+            {
+                // Handle the exception (e.g., log the error, throw a custom exception, etc.)
+                // You can also rethrow the exception if you want to bubble it up to the caller
+                // For simplicity, we'll just throw a new exception with the original message
+                //Connection Auti Close
+                return new MyResponse<UserModel>()
+                {
+                    Message = "Exception Occur Due to " + ex.Message,
+                    IsSuccess = false
+                };
+                throw new Exception("An error occurred while inserting the user.", ex);
+            }
+            return new MyResponse<UserModel>()
+            {
+                Response = user,
+                IsSuccess = false
+            };
         }
         // Inser user to the data base
-        public MyResponse InsertUser(UserModel user)
+        public MyResponse<string> InsertUser(UserModel user)
         {
+            int rowsAffected = 0;
                 Hashtable parameters = new Hashtable
                 {
                     { "@Email", user.Email },
@@ -66,9 +96,12 @@ namespace EduSpaceAPI.Repository
                     { "@IsVerified", user.IsVerified },
                     { "@Address", user.Address },
                     { "@Resume", user.Resume },
-                    { "@ImageName",  user.ImageName },
-                    { "@ResumeName", user.ResumeName }
+                    { "@ImagePath",  user.ImagePath },
+                    { "@ResumePath", user.ResumePath },
+                    { "@City",  user.City },
+                    { "@CreatedAt", DateTime.Today }
                 };
+        
             try
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -84,8 +117,12 @@ namespace EduSpaceAPI.Repository
                             if (parameterName == "@UserImage" || parameterName == "@Resume")
                             {
                                 object parameterValue = (entry.Value != null) ? entry.Value : GetDefaultImageBytes();
-                                command.Parameters.Add(parameterName, SqlDbType.VarBinary, -1).Value = DBNull.Value;
+                                command.Parameters.Add(parameterName, SqlDbType.VarBinary, -1).Value = parameterValue;
 
+                            }
+                            else if(parameterName == "@CreatedAt")
+                            {
+                                command.Parameters.AddWithValue(parameterName, entry.Value);
                             }
                             else
                             {
@@ -96,18 +133,18 @@ namespace EduSpaceAPI.Repository
                         connection.Open();
                         if (connection.State == ConnectionState.Open)
                         {
-                            int rowsAffected = command.ExecuteNonQuery();
-                            if (rowsAffected == -1)
+                             rowsAffected = command.ExecuteNonQuery();
+                            if (rowsAffected != 0)
                             {
-                                rowsAffected *= -1;
-                                return new MyResponse()
+                                
+                                return new MyResponse<string>()
                                 {
-                                    Message = "Rows Effected" + rowsAffected.ToString(),
+                                    Message = "Rows Effected",
                                     IsSuccess = true
                                 };
                             }
                             else
-                                return new MyResponse()
+                                return new MyResponse<string>()
                                 {
                                     Message = "Now Row Effected",
                                     IsSuccess = false
@@ -115,7 +152,7 @@ namespace EduSpaceAPI.Repository
                         }
                         else
                         {
-                            return new MyResponse()
+                            return new MyResponse<string>()
                             {
                                 Message = "Connection is not Open",
                                 IsSuccess = false
@@ -134,7 +171,7 @@ namespace EduSpaceAPI.Repository
                 // You can also rethrow the exception if you want to bubble it up to the caller
                 // For simplicity, we'll just throw a new exception with the original message
                 //Connection Auti Close
-                return new MyResponse()
+                return new MyResponse<string>()
                 {
                     Message = "Exception Occur Due to " + ex.Message,
                     IsSuccess = false
@@ -143,8 +180,61 @@ namespace EduSpaceAPI.Repository
             }
            
         }
-        // Generate Default Image in Byte
-        private byte[] GetDefaultImageBytes()
+        // get User bt id 
+       
+        public MyResponse<UserModel> GetUserById(int userId)
+        {
+            // Replace with your actual connection string
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand("SelectUserById", connection);
+                command.CommandType = CommandType.StoredProcedure;
+
+                // Add the UserId parameter to the command
+                command.Parameters.AddWithValue("@UserId", userId);
+
+                UserModel user = null;
+
+                try
+                {
+                    connection.Open();
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows) // Check if the reader has any rows
+                        {
+                            if (reader.Read())
+                            {
+                                // Map the reader data to the User object
+                                user = UserMapper.MapUser(reader);
+                            }
+                        } else
+                        {
+                            return new MyResponse<UserModel>()
+                            {
+                                IsSuccess = false,
+                                Message = "User Not Exist"
+                            };
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle any exceptions
+                    Console.WriteLine(ex.Message);
+                }
+
+                return new MyResponse<UserModel>()
+                {
+                    Response = user,
+                    IsSuccess = true,
+                    Message = "User Found"
+                };
+            }
+        }
+                // Generate Default Image in Byte
+                private byte[] GetDefaultImageBytes()
         {
             // Assuming you have a default image stored in your project or as a resource
             // Load the default image file or generate a default image byte array

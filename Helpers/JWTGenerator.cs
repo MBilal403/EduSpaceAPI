@@ -16,7 +16,7 @@ namespace EduSpaceAPI.Helpers
             _configuration = configuration;
         }
         
-        public string GetToken(LoginModel model)
+        public string GetToken(UserModel model)
         {
             // Generate JWT token
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -26,7 +26,9 @@ namespace EduSpaceAPI.Helpers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, model.Email) // Add any additional claims as needed
+                    new Claim(ClaimTypes.Name, model.UserId.ToString()), // Add any additional claims as needed
+                    new Claim(ClaimTypes.Email, model.Email), // Add any additional claims as needed
+                    new Claim(ClaimTypes.Role, model.UserRole) // Add any additional claims as needed
                 }),
                 Expires = DateTime.UtcNow.AddDays(7), // Set token expiration time
                 Issuer = _configuration["JWT:ValidIssuer"],

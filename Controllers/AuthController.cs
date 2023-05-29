@@ -15,6 +15,7 @@ using System.Text.Json.Serialization;
 using System.Collections;
 using System.Data.SqlClient;
 using System.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EduSpaceAPI.Controllers
 {
@@ -23,12 +24,14 @@ namespace EduSpaceAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly FileManager _fileManager;
         private readonly ILogger<AuthController> _logger;
         private UserRepository _userRepository;
         private JWTGenerator _jwtGenerator;
 
-        public AuthController(JWTGenerator generator, UserRepository userRepository, IWebHostEnvironment webHostEnvironment, ILogger<AuthController> logger) {
+        public AuthController(JWTGenerator generator,FileManager fileManager, UserRepository userRepository, IWebHostEnvironment webHostEnvironment, ILogger<AuthController> logger) {
             _jwtGenerator = generator;
+            _fileManager = fileManager;
             _userRepository = userRepository;
             _webHostEnvironment = webHostEnvironment;
             _logger = logger;
@@ -36,6 +39,7 @@ namespace EduSpaceAPI.Controllers
 
         // GET: Auth/Getlist
         [HttpGet]
+        [Authorize(Roles ="SuperAdmin")]
         public IEnumerable<string> Getlist() // For Testing
         {
             _logger.LogInformation("hello");
@@ -53,18 +57,26 @@ namespace EduSpaceAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(UserModel loginModel)
+        [AllowAnonymous]
+        public IActionResult Login(LoginModel loginModel)
         {
             // _logger.LogInformation(");
             try
             {
                 // Check if the login credentials are valid
-                int id = _userRepository.IsAuthenticateUser(loginModel);
+                MyResponse<UserModel> user = _userRepository.IsAuthenticateUser(loginModel);
 
-                if (id > 0)
+                if (user.Response.UserId > 0)
                 {
                     // Return a success response
-                    return Ok();
+                    // Now we need to generate Token
+                    user.Token = _jwtGenerator.GetToken(new UserModel
+                    {
+                        UserId = user.Response.UserId,
+                        UserRole = user.Response.UserRole,
+                        Email = user.Response.Email
+                    });
+                    return Ok(user);
                 }
                 else
                 {
@@ -75,7 +87,6 @@ namespace EduSpaceAPI.Controllers
             catch (Exception ex)
             {
                 // Log the exception if needed
-
                 // Handle the exception and return an appropriate response
                 // Return an internal server error response with a meaningful message
                 var errorResponse = new HttpResponseMessage(HttpStatusCode.InternalServerError)
@@ -86,6 +97,14 @@ namespace EduSpaceAPI.Controllers
 
                 throw new System.Web.Http.HttpResponseException(errorResponse);
             }
+        }
+
+        [HttpGet("{id}")]
+        [Authorize(Roles = "SuperAdmin,Teacher,Admin")]
+        public MyResponse<UserModel> UserById(int id) 
+        {
+            
+            return _userRepository.GetUserById(id);
         }
 
 
@@ -144,11 +163,11 @@ namespace EduSpaceAPI.Controllers
         }
 
         [HttpPost]
-        public MyResponse UserSignup([FromForm] UserSignupDto user)
+        public MyResponse<string> UserSignup([FromForm] UserSignupDto user)
         {
             if (user.userModel == null)
             {
-                return new MyResponse()
+                return new MyResponse<string>()
                 {
                     Message = "Enter the Data Plaese",
                     IsSuccess = false
@@ -158,13 +177,16 @@ namespace EduSpaceAPI.Controllers
             {
                 UserModel model = JsonConvert.DeserializeObject<UserModel>(user.userModel);
                 if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password) || string.IsNullOrEmpty(model.UserRole)) {
-                    return new MyResponse()
+                    return new MyResponse<string>()
                     {
                         Message = "Enter the Email, Password & Role is Compulsory",
                         IsSuccess = false
                     };
                 }
-                MyResponse response = _userRepository.InsertUser(model);
+               model.ImagePath =  _fileManager.GetFilePath(user.Image!);
+               model.ResumePath =  _fileManager.GetFilePath(user.Resume!);
+                      
+                MyResponse<string> response = _userRepository.InsertUser(model);
                 return response;
             }
 
@@ -182,7 +204,7 @@ namespace EduSpaceAPI.Controllers
             }
 
             // Generate a unique filename
-            string fileName = Guid.NewGuid().ToString() + ".pdf"; //+ Path.GetExtension(file.FileName);
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 
             // Get the uploads folder path
             string uploadsFolder = Path.Combine(_webHostEnvironment.ContentRootPath, "Uploads");
@@ -205,6 +227,7 @@ namespace EduSpaceAPI.Controllers
 
             return Ok($"File uploaded successfully. File path: {filePath} + {filebyte}");
         }
+      
 
 
     }
