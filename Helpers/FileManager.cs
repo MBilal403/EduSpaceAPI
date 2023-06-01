@@ -11,11 +11,12 @@ namespace EduSpaceAPI.Helpers
            
         }
 
-        public string GetFilePath(IFormFile file) {
+        public string? GetFilePath(IFormFile file) {
             string? uploadsFolder = null;
+            //string? myPath = null;
             if (file == null || file.Length <= 0)
             {
-                return "Invalid file.";
+                return null;
             }
 
             // Generate a unique filename
@@ -24,11 +25,12 @@ namespace EduSpaceAPI.Helpers
             if (Path.GetExtension(file.FileName) == ".jpg" || Path.GetExtension(file.FileName) == ".png")
             {
              uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Images");
-
+             //   myPath = "/Images/" + fileName;
             }
             else
             {
                  uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "Resumes");
+               // myPath = "/Resumes/" + fileName;
             }
             // Create the uploads folder if it doesn't exist
             if (!Directory.Exists(uploadsFolder))
@@ -45,7 +47,7 @@ namespace EduSpaceAPI.Helpers
 
             byte[] filebyte = System.IO.File.ReadAllBytes(filePath);
             System.IO.File.WriteAllBytes(filePath, filebyte);
-
+            
             return filePath;
 
         }

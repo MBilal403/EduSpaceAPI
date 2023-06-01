@@ -10,8 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddTransient<JWTGenerator>();  
-builder.Services.AddTransient<UserRepository>();  
 builder.Services.AddTransient<FileManager>();  
+builder.Services.AddTransient<UserRepository>();  
+builder.Services.AddTransient<DepartmentRepository>();  
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

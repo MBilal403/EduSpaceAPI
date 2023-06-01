@@ -81,7 +81,7 @@ namespace EduSpaceAPI.Repository
             };
         }
         // Inser user to the data base
-        public MyResponse<string> InsertUser(UserModel user)
+        public MyResponse<string> InsertUser(UserModel user, IFormFile Image, IFormFile Resume)
         {
             int rowsAffected = 0;
                 Hashtable parameters = new Hashtable
@@ -114,10 +114,33 @@ namespace EduSpaceAPI.Repository
                         foreach (DictionaryEntry entry in parameters)
                         {
                             string parameterName = (string)entry.Key;
-                            if (parameterName == "@UserImage" || parameterName == "@Resume")
+                            if (parameterName == "@UserImage")
                             {
+                                if (user.ImagePath == null)
+                                {
                                 object parameterValue = (entry.Value != null) ? entry.Value : GetDefaultImageBytes();
                                 command.Parameters.Add(parameterName, SqlDbType.VarBinary, -1).Value = parameterValue;
+                                }
+                                else
+                                {
+                                    object parameterValue = GetImageBytes(user.ImagePath);
+                                    command.Parameters.Add(parameterName, SqlDbType.VarBinary, -1).Value = parameterValue;
+                                }
+
+                            }
+                            else if (parameterName == "@Resume")
+                            {
+                                if(user.ResumePath == null)
+                                {
+
+                                object parameterValue = (entry.Value != null) ? entry.Value : GetDefaultImageBytes();
+                                command.Parameters.Add(parameterName, SqlDbType.VarBinary, -1).Value = parameterValue;
+                                }else
+                                {
+                                    object parameterValue = GetImageBytes(user.ResumePath);
+                                    command.Parameters.Add(parameterName, SqlDbType.VarBinary, -1).Value = parameterValue;
+
+                                }
 
                             }
                             else if(parameterName == "@CreatedAt")
@@ -180,8 +203,8 @@ namespace EduSpaceAPI.Repository
             }
            
         }
+
         // get User bt id 
-       
         public MyResponse<UserModel> GetUserById(int userId)
         {
             // Replace with your actual connection string
@@ -233,20 +256,65 @@ namespace EduSpaceAPI.Repository
                 };
             }
         }
-                // Generate Default Image in Byte
-                private byte[] GetDefaultImageBytes()
+        public byte[] GetUserImageByImagePath(string imagePath)
+        {
+          
+            byte[] userImage = null;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                string query = "SELECT [UserImage] FROM [dbo].[User] WHERE [ImagePath] = @ImagePath";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@ImagePath", imagePath);
+                    connection.Open();
+
+                    using (SqlDataReader reader = command.ExecuteReader(CommandBehavior.CloseConnection))
+                    {
+                        if (reader.Read())
+                        {
+                            if (!reader.IsDBNull(0))
+                            {
+                                userImage = (byte[])reader["UserImage"];
+                            }
+                        }
+                    }
+                }
+            }
+
+            return userImage;
+        }
+
+
+
+
+
+
+
+        // Generate Default Image in Byte
+        private byte[] GetDefaultImageBytes()
         {
             // Assuming you have a default image stored in your project or as a resource
             // Load the default image file or generate a default image byte array
-
             // Option 1: Load default image file from disk
             string defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", "DefaultImage.jpg");
            // string defaultImagePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", "DefaultImage.jpg");
             byte[] defaultImageBytes = File.ReadAllBytes(defaultImagePath);
             return defaultImageBytes;
         }
-
+        private byte[] GetImageBytes(string path)
+        {
+            // Assuming you have a default image stored in your project or as a resource
+            // Load the default image file or generate a default image byte array
+            // Option 1: Load default image file from disk
+           // string defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", "DefaultImage.jpg");
+             string defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Images", path);
+            byte[] defaultImageBytes = File.ReadAllBytes(defaultImagePath);
+            return defaultImageBytes;
         }
+
+    }
 }
 
     

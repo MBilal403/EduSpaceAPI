@@ -100,18 +100,32 @@ namespace EduSpaceAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "SuperAdmin,Teacher,Admin")]
         public MyResponse<UserModel> UserById(int id) 
         {
-            
             return _userRepository.GetUserById(id);
         }
 
+        [HttpGet("{path}")]
+        public HttpResponseMessage GetImage(string path)
+        {
+            byte[] imageBytes = _userRepository.GetUserImageByImagePath(path);
+
+          /*  if (imageBytes == null)
+            {
+                // Image not found in the database
+                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "Image not found.");
+            }*/
+
+            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Content = new ByteArrayContent(imageBytes);
+            response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg"); // Adjust the content type based on your image format
+
+            return response;
+        }
 
         [HttpPost]
         public IActionResult Registration([FromBody] LoginModel emailModel)
         {
-
             if (SendVerificationCode.SendCode(emailModel.Email) == "successfully sent.")
             {
                 return Ok("Verification code sent successfully.");
@@ -175,18 +189,19 @@ namespace EduSpaceAPI.Controllers
             }
             else
             {
-                UserModel model = JsonConvert.DeserializeObject<UserModel>(user.userModel);
-                if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password) || string.IsNullOrEmpty(model.UserRole)) {
+                UserModel model = JsonConvert.DeserializeObject<UserModel>(user.userModel)!;
+                if (string.IsNullOrEmpty(model!.Email!) || string.IsNullOrEmpty(model.Password) || string.IsNullOrEmpty(model.UserRole)) {
                     return new MyResponse<string>()
                     {
                         Message = "Enter the Email, Password & Role is Compulsory",
                         IsSuccess = false
                     };
                 }
+
                model.ImagePath =  _fileManager.GetFilePath(user.Image!);
                model.ResumePath =  _fileManager.GetFilePath(user.Resume!);
                       
-                MyResponse<string> response = _userRepository.InsertUser(model);
+                MyResponse<string> response = _userRepository.InsertUser(model,user.Image,user.Resume);
                 return response;
             }
 
