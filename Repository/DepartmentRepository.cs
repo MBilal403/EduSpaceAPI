@@ -105,6 +105,25 @@ namespace EduSpaceAPI.Repository
             }
 
         }
+        public void UpdateInchargeAndAdminNames(int DepartId, string inchargeName, string adminName)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                string sql = "UPDATE [dbo].[Department] " +
+                             "SET [InchargeName] = @InchargeName, [AdminName] = @AdminName " +
+                             "WHERE [DepartId] = @DepartId";
+
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@InchargeName", inchargeName);
+                    command.Parameters.AddWithValue("@AdminName", adminName);
+                    command.Parameters.AddWithValue("@DepartId", DepartId);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
         // Get department only where status is true that department are non active
         public IEnumerable<DepartmentModel> GetNonActiveDepartments()
         {
@@ -216,7 +235,24 @@ namespace EduSpaceAPI.Repository
                 }
             }
         }
+        // Update departemnt name
+        public void UpdateDepartName(int departmentId, string newDepartName)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                string sql = "UPDATE [dbo].[Department] " +
+                             "SET [DepartName] = @DepartName " +
+                             "WHERE [DepartId] = @DepartId";
 
+                using (SqlCommand command = new SqlCommand(sql, connection))
+                {
+                    command.Parameters.AddWithValue("@DepartName", newDepartName);
+                    command.Parameters.AddWithValue("@DepartId", departmentId);
+
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
     }
-
 }

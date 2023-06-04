@@ -14,6 +14,8 @@ builder.Services.AddTransient<FileManager>();
 builder.Services.AddTransient<UserRepository>();  
 builder.Services.AddTransient<DepartmentRepository>();  
 builder.Services.AddTransient<ProgramRepository>();  
+builder.Services.AddTransient<StudentRepository>();  
+builder.Services.AddTransient<SessionRepository>();  
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

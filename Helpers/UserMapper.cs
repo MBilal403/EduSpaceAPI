@@ -20,7 +20,7 @@ namespace EduSpaceAPI.Helpers
                 FullName = reader["FullName"].ToString(),
                 VerificationCode = reader["VerificationCode"].ToString(),
                 ContactNumber = reader["ContactNumber"].ToString(),
-            Address = reader["Address"].ToString(),
+                 Address = reader["Address"].ToString(),
                 ImagePath = reader["ImagePath"].ToString(),
                 ResumePath = reader["ResumePath"].ToString(),
                 City = reader["City"].ToString(),

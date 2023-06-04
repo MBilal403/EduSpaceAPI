@@ -24,6 +24,14 @@ namespace EduSpaceAPI.Controllers
             var data  =  _departmentRepository.GetDepartments();
             return data;
         }
+        // GET: api/<DepartmentController>
+        [HttpGet("{id}")]
+        public IEnumerable<DepartmentModel> DepartmentById(int id)
+        {
+            var data = _departmentRepository.GetDepartments();
+            var searchResults = data.Where(d => d.DepartId == id);
+            return searchResults;
+        }
         // GET api/<DepartmentController>/5
         [HttpGet]
         public IActionResult ActiveDepartments()
@@ -102,6 +110,32 @@ namespace EduSpaceAPI.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+        //
+        [HttpPut("{id}")]
+        public IActionResult UpdateDepartName(int id, [FromBody] DepartmentModel model)
+        {
+            if (model == null)
+            {
+                return BadRequest();
+            }
+
+            _departmentRepository.UpdateDepartName(id, model.DepartName!);
+
+            return Ok();
+        }
+        [HttpPut("{id}")]
+        public IActionResult UpdateInchargeAndAdminNames(int id, [FromBody] DepartmentModel model)
+        {
+            if (model == null)
+            {
+                return BadRequest();
+            }
+
+            _departmentRepository.UpdateInchargeAndAdminNames(id, model.InchargeName!, model.AdminName!);
+
+            return Ok();
+        }
+
 
         [HttpGet("{id}")]
         public string Get(int id)
