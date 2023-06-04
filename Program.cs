@@ -13,10 +13,21 @@ builder.Services.AddTransient<JWTGenerator>();
 builder.Services.AddTransient<FileManager>();  
 builder.Services.AddTransient<UserRepository>();  
 builder.Services.AddTransient<DepartmentRepository>();  
+builder.Services.AddTransient<ProgramRepository>();  
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin",
+        builder =>
+        {
+            builder.WithOrigins("https://localhost:7282")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
 
 ///////////////////////////////////////////////////////////////////
 // Configure JWT authentication
@@ -53,6 +64,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseCors("AllowSpecificOrigin");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

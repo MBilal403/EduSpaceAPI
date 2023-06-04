@@ -1,11 +1,71 @@
 {
   "Version": 1,
-  "Hash": "1UFDIvXOGEULhIwmbtg2sWa6l16p0l3YGl9tHx3wvAQ=",
+  "Hash": "G4teZ98PTtjSJQ41lMInYIVM9M32HgW8tCriaiedeI4=",
   "Source": "EduSpaceAPI",
   "BasePath": "_content/EduSpaceAPI",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
-  "Assets": []
+  "DiscoveryPatterns": [
+    {
+      "Name": "EduSpaceAPI\\wwwroot",
+      "Source": "EduSpaceAPI",
+      "ContentRoot": "C:\\Users\\Muhammad Subhan\\source\\repos\\EduSpaceAPI\\wwwroot\\",
+      "BasePath": "_content/EduSpaceAPI",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\Muhammad Subhan\\source\\repos\\EduSpaceAPI\\wwwroot\\Images\\322ae021-b06a-46c6-ab50-debbfe4c9557.jpg",
+      "SourceId": "EduSpaceAPI",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Muhammad Subhan\\source\\repos\\EduSpaceAPI\\wwwroot\\",
+      "BasePath": "_content/EduSpaceAPI",
+      "RelativePath": "Images/322ae021-b06a-46c6-ab50-debbfe4c9557.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Images\\322ae021-b06a-46c6-ab50-debbfe4c9557.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Muhammad Subhan\\source\\repos\\EduSpaceAPI\\wwwroot\\Images\\8b20e669-e7a7-4574-82b0-c675b626c28e.jpg",
+      "SourceId": "EduSpaceAPI",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Muhammad Subhan\\source\\repos\\EduSpaceAPI\\wwwroot\\",
+      "BasePath": "_content/EduSpaceAPI",
+      "RelativePath": "Images/8b20e669-e7a7-4574-82b0-c675b626c28e.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Images\\8b20e669-e7a7-4574-82b0-c675b626c28e.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\Muhammad Subhan\\source\\repos\\EduSpaceAPI\\wwwroot\\Images\\a9d17b46-5ef1-49dd-9549-0fd3888806d7.jpg",
+      "SourceId": "EduSpaceAPI",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Muhammad Subhan\\source\\repos\\EduSpaceAPI\\wwwroot\\",
+      "BasePath": "_content/EduSpaceAPI",
+      "RelativePath": "Images/a9d17b46-5ef1-49dd-9549-0fd3888806d7.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Images\\a9d17b46-5ef1-49dd-9549-0fd3888806d7.jpg"
+    }
+  ]
 }

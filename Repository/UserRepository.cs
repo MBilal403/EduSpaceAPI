@@ -14,12 +14,12 @@ namespace EduSpaceAPI.Repository
     public class UserRepository
     {
         private IConfiguration _configuration;
-        private string connectionString;
+        private string _connectionString;
         IWebHostEnvironment _webHostEnvironment;
         public UserRepository(IConfiguration configuration ,IWebHostEnvironment webHostEnvironment)
         {
             _configuration = configuration;
-            connectionString = _configuration["ConnectionString:DBx"];
+            _connectionString = _configuration["ConnectionString:DBx"];
             _webHostEnvironment = webHostEnvironment;   
         }
         // Inside UserRepository.cs
@@ -32,7 +32,7 @@ namespace EduSpaceAPI.Repository
             UserModel user = new UserModel();
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     string query = "SELECT UserId,UserRole,Email,FullName  FROM [User] WHERE Email = @Email AND Password = @Password";
 
@@ -81,7 +81,7 @@ namespace EduSpaceAPI.Repository
             };
         }
         // Inser user to the data base
-        public MyResponse<string> InsertUser(UserModel user, IFormFile Image, IFormFile Resume)
+        public MyResponse<string> InsertUser(UserModel user)
         {
             int rowsAffected = 0;
                 Hashtable parameters = new Hashtable
@@ -99,12 +99,15 @@ namespace EduSpaceAPI.Repository
                     { "@ImagePath",  user.ImagePath },
                     { "@ResumePath", user.ResumePath },
                     { "@City",  user.City },
-                    { "@CreatedAt", DateTime.Today }
+                    { "@CreatedAt", user.CreatedAt },
+                    { "@Gender", user.Gender },
+                    { "@DateOfBirth", user.DateOfBirth },
+                    { "@Qualification", user.Qualification }
                 };
         
             try
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     using (SqlCommand command = new SqlCommand("InsertUser", connection))
                     {
@@ -123,7 +126,7 @@ namespace EduSpaceAPI.Repository
                                 }
                                 else
                                 {
-                                    object parameterValue = GetImageBytes(user.ImagePath);
+                                    object parameterValue = user.UserImage!;
                                     command.Parameters.Add(parameterName, SqlDbType.VarBinary, -1).Value = parameterValue;
                                 }
 
@@ -137,7 +140,7 @@ namespace EduSpaceAPI.Repository
                                 command.Parameters.Add(parameterName, SqlDbType.VarBinary, -1).Value = parameterValue;
                                 }else
                                 {
-                                    object parameterValue = GetImageBytes(user.ResumePath);
+                                    object parameterValue = user.Resume!;
                                     command.Parameters.Add(parameterName, SqlDbType.VarBinary, -1).Value = parameterValue;
 
                                 }
@@ -203,13 +206,36 @@ namespace EduSpaceAPI.Repository
             }
            
         }
+        public List<UserModel> GetAllUsers()
+        {
+            var users = new List<UserModel>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                using (var command = new SqlCommand("SELECT * FROM [User]", connection))
+                {
+                    using (var reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                         
+                            users.Add(UserMapper.MapUser(reader));
+                        }
+                    }
+                }
+            }
+
+            return users;
+        }
 
         // get User bt id 
         public MyResponse<UserModel> GetUserById(int userId)
         {
             // Replace with your actual connection string
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 SqlCommand command = new SqlCommand("SelectUserById", connection);
                 command.CommandType = CommandType.StoredProcedure;
@@ -261,7 +287,7 @@ namespace EduSpaceAPI.Repository
           
             byte[] userImage = null;
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 string query = "SELECT [UserImage] FROM [dbo].[User] WHERE [ImagePath] = @ImagePath";
 

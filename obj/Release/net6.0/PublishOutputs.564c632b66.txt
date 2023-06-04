@@ -5,6 +5,8 @@ C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\
 C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\EduSpaceAPI.deps.json
 C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\EduSpaceAPI.runtimeconfig.json
 C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\EduSpaceAPI.pdb
+C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\System.Net.Http.Formatting.dll
+C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\System.Web.Http.dll
 C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\Microsoft.IdentityModel.JsonWebTokens.dll
 C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\Microsoft.IdentityModel.Logging.dll
@@ -13,7 +15,14 @@ C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\
 C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\Microsoft.IdentityModel.Tokens.dll
 C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\Microsoft.OpenApi.dll
 C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\Newtonsoft.Json.dll
+C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\Newtonsoft.Json.Bson.dll
 C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\System.Data.SqlClient.dll
 C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\runtimes\win-arm64\native\sni.dll
+C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\runtimes\win-x64\native\sni.dll
+C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\runtimes\win-x86\native\sni.dll
+C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+C:\Users\Muhammad Subhan\source\repos\EduSpaceAPI\obj\Release\net6.0\PubTmp\Out\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll

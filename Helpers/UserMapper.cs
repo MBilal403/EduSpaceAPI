@@ -20,12 +20,14 @@ namespace EduSpaceAPI.Helpers
                 FullName = reader["FullName"].ToString(),
                 VerificationCode = reader["VerificationCode"].ToString(),
                 ContactNumber = reader["ContactNumber"].ToString(),
-                IsVerified = (bool)reader["IsVerified"],
-                Address = reader["Address"].ToString(),
+            Address = reader["Address"].ToString(),
                 ImagePath = reader["ImagePath"].ToString(),
                 ResumePath = reader["ResumePath"].ToString(),
                 City = reader["City"].ToString(),
-                CreatedAt = (DateTime)reader["CreatedAt"]
+                CreatedAt = (DateTime)reader["CreatedAt"],
+                Gender = reader["Gender"].ToString()!,
+                DateOfBirth = (DateTime)reader["DateOfBirth"],
+                Qualification =reader["Qualification"].ToString()!
             };
             // Handle DBNull values for UserImage column
             if (reader["UserImage"] != DBNull.Value)

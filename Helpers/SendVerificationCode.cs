@@ -8,12 +8,12 @@ namespace EduSpaceAPI.Helpers
     {
         private static string MyEmail = "lmseduspace@gmail.com";
         private static string MyPassCode = "wpzwudqvemjukxjo";
-        public static string SendCode(string emailaddress)
+        public static string SendCode(string emailaddress, string subject, string body )
         {
             try
             {
                 // Generate a random verification code
-                var verificationCode = GenerateVerificationCode.VerificationCode();
+            //    var verificationCode = GenerateVerificationCode.VerificationCode();
 
                 // Configure the SMTP client
                 var smtpClient = new SmtpClient("smtp.gmail.com", 587);
@@ -25,8 +25,8 @@ namespace EduSpaceAPI.Helpers
                 var mailMessage = new MailMessage();
                 mailMessage.From = new MailAddress(MyEmail);
                 mailMessage.To.Add(emailaddress);
-                mailMessage.Subject = "Verification Code";
-                mailMessage.Body = $"Your verification code is: {verificationCode}";
+                mailMessage.Subject = subject;
+                mailMessage.Body = body;
 
                 // Send the email
                 smtpClient.Send(mailMessage);

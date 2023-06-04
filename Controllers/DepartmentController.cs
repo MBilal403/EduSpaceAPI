@@ -17,7 +17,6 @@ namespace EduSpaceAPI.Controllers
             _departmentRepository= departmentRepository;
         }
 
-
         // GET: api/<DepartmentController>
         [HttpGet]
         public IEnumerable<DepartmentModel> Departments()
@@ -25,8 +24,85 @@ namespace EduSpaceAPI.Controllers
             var data  =  _departmentRepository.GetDepartments();
             return data;
         }
-
         // GET api/<DepartmentController>/5
+        [HttpGet]
+        public IActionResult ActiveDepartments()
+        {
+            try
+            {
+                var departments = _departmentRepository.GetActiveDepartments();
+                return Ok(departments);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        // GET api/<DepartmentController>/5
+        [HttpGet]
+        public IActionResult NonActiveDepartments()
+        {
+            try
+            {
+                var departments = _departmentRepository.GetNonActiveDepartments();
+                return Ok(departments);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        [HttpGet]
+        public IActionResult DepartmentsWithNullNames()
+        {
+            try
+            {
+                var departments = _departmentRepository.GetDepartmentsWithNullNames();
+                return Ok(departments);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        [HttpGet]
+        public IEnumerable<DepartmentModel> DepartmentsWithName(string departName)
+        {
+
+            var data = _departmentRepository.GetDepartments();
+            var searchResults = data.Where(d => d.DepartName!.Contains(departName, StringComparison.OrdinalIgnoreCase));
+            return searchResults;
+        }
+        // Put api/<DepartmentController>/5
+        [HttpPut("{id}")]
+        public IActionResult UpdateDepartment(int id, [FromBody] DepartmentModel department)
+        {
+            try
+            {
+                department.DepartId = id;
+                _departmentRepository.UpdateDepartment(department);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        // ghchgc
+        [HttpPut("{id}")]
+        public IActionResult DepartmentStatus(int id, [FromBody] DepartmentModel department)
+        {
+            try
+            {
+                _departmentRepository.UpdateDepartmentStatus(id, department.Status);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
         [HttpGet("{id}")]
         public string Get(int id)
         {

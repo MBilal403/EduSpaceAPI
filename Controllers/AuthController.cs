@@ -98,6 +98,32 @@ namespace EduSpaceAPI.Controllers
                 throw new System.Web.Http.HttpResponseException(errorResponse);
             }
         }
+        [HttpGet]
+        public IActionResult Users()
+        {
+            var users = _userRepository.GetAllUsers();
+            return Ok(users);
+        }
+
+        [HttpGet]
+        public IActionResult AdminUsers()
+        {
+            var users = _userRepository.GetAllUsers();
+
+            var searchResults = users.Where(d => d.UserRole == "Admin");
+
+            return Ok(searchResults);
+        }
+        [HttpGet]
+        public IActionResult TeacherUsers()
+        {
+            var users = _userRepository.GetAllUsers();
+
+            var searchResults = users.Where(d => d.UserRole == "Teacher");
+
+            return Ok(searchResults);
+        }
+
 
         [HttpGet("{id}")]
         public MyResponse<UserModel> UserById(int id) 
@@ -123,7 +149,7 @@ namespace EduSpaceAPI.Controllers
             return response;
         }
 
-        [HttpPost]
+       /* [HttpPost]
         public IActionResult Registration([FromBody] LoginModel emailModel)
         {
             if (SendVerificationCode.SendCode(emailModel.Email) == "successfully sent.")
@@ -132,7 +158,7 @@ namespace EduSpaceAPI.Controllers
             }
             return StatusCode(500, "Failed to send verification code. Error");
 
-        }
+        }*/
         [HttpPost]
         public string UploadImages(IFormFile file)
         {
@@ -177,9 +203,9 @@ namespace EduSpaceAPI.Controllers
         }
 
         [HttpPost]
-        public MyResponse<string> UserSignup([FromForm] UserSignupDto user)
+        public MyResponse<string> UserSignup([FromBody] UserModel user)
         {
-            if (user.userModel == null)
+            if (user == null)
             {
                 return new MyResponse<string>()
                 {
@@ -189,8 +215,8 @@ namespace EduSpaceAPI.Controllers
             }
             else
             {
-                UserModel model = JsonConvert.DeserializeObject<UserModel>(user.userModel)!;
-                if (string.IsNullOrEmpty(model!.Email!) || string.IsNullOrEmpty(model.Password) || string.IsNullOrEmpty(model.UserRole)) {
+             //   UserModel model = JsonConvert.DeserializeObject<UserModel>(user)!;
+                if (string.IsNullOrEmpty(user!.Email!) || string.IsNullOrEmpty(user.Password) || string.IsNullOrEmpty(user.UserRole)) {
                     return new MyResponse<string>()
                     {
                         Message = "Enter the Email, Password & Role is Compulsory",
@@ -198,10 +224,23 @@ namespace EduSpaceAPI.Controllers
                     };
                 }
 
-               model.ImagePath =  _fileManager.GetFilePath(user.Image!);
-               model.ResumePath =  _fileManager.GetFilePath(user.Resume!);
+              // model.ImagePath =  _fileManager.GetFilePath(user.Image!);
+             //  model.ResumePath =  _fileManager.GetFilePath(user.Resume!);
                       
-                MyResponse<string> response = _userRepository.InsertUser(model,user.Image,user.Resume);
+                MyResponse<string> response = _userRepository.InsertUser(user);
+                if(response.IsSuccess)
+                {
+                    string subject = "Login Information";
+                    string body = "Dear User,\n\n"
+                                + "Your login information is as follows:\n"
+                                + "Email: "+ user.Email +"\n"
+                                + user.Password +"\n\n"
+                                + "Please use this information to log into your account.\n\n"
+                                + "Best regards,\n"
+                                + "EduSpace LMS";
+                    SendVerificationCode.SendCode(user.Email, subject, body);
+                    return response;
+                }
                 return response;
             }
 
