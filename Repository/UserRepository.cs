@@ -27,8 +27,7 @@ namespace EduSpaceAPI.Repository
         // A methid to check User is Authentic
         public MyResponse<UserModel> IsAuthenticateUser(LoginModel model)
         {
-            int userId = -1; // Default value indicating invalid credentials
-            string role = null;
+          
             UserModel user = new UserModel();
             try
             {
