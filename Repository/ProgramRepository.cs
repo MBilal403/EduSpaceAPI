@@ -96,8 +96,26 @@ namespace EduSpaceAPI.Repository
                     }
                 }
             }
+        // Update the department status
+        public void UpdateProgramStatus(int ProgramId, bool status)
+        {
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                string query = "UPDATE [dbo].[Program] " +
+                                "SET" +
+                                "[Status] = @Status " +
+                                "WHERE [ProgramId] = @ProgramId";
 
-            public void DeleteProgram(int id)
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Status", status);
+                    command.Parameters.AddWithValue("@ProgramId", ProgramId);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+                public void DeleteProgram(int id)
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {

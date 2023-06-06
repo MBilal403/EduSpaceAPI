@@ -45,6 +45,20 @@ namespace EduSpaceAPI.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred: {ex.Message}");
+          
+            }
+        }
+        [HttpPut("{id}")]
+        public IActionResult ProgramStatus(int id, [FromBody] ProgramModel program)
+        {
+            try
+            {
+                _programRepository.UpdateProgramStatus(id, program.Status);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
 

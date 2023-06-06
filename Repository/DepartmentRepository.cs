@@ -107,6 +107,7 @@ namespace EduSpaceAPI.Repository
         }
         public void UpdateInchargeAndAdminNames(int DepartId, string inchargeName, string adminName)
         {
+            
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 string sql = "UPDATE [dbo].[Department] " +
