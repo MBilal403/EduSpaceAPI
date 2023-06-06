@@ -65,7 +65,6 @@ namespace EduSpaceAPI.Repository
                                     object parameterValue = student.Image!;
                                     command.Parameters.Add(parameterName, SqlDbType.VarBinary, -1).Value = parameterValue;
                                 }
-
                             }
                             else if (parameterName == "@CreatedAt")
                             {
@@ -196,26 +195,6 @@ namespace EduSpaceAPI.Repository
                 return (int)result > 0;
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
