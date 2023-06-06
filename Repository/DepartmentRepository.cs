@@ -226,14 +226,31 @@ namespace EduSpaceAPI.Repository
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                string query = "UPDATE [Department] SET [Status] = @Status WHERE [DepartId] = @DepartId";
+                string query = "UPDATE [dbo].[Department] " +
+                                "SET [InchargeName] = NULL, " +
+                                "[AdminName] = NULL, " +
+                                "[Status] = @Status " +
+                                "WHERE [DepartID] = @DepartId";
+
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
                     command.Parameters.AddWithValue("@Status", status);
                     command.Parameters.AddWithValue("@DepartId", departId);
                     command.ExecuteNonQuery();
                 }
+                string updateQuery = "UPDATE [fyppugc].[dbo].[Program] " +
+                               "SET [Status] = @status " +
+                               "WHERE [DepartFId] = @departId";
+
+                using (SqlCommand command = new SqlCommand(updateQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@status", status);
+                    command.Parameters.AddWithValue("@departId", departId);
+                    command.ExecuteNonQuery();
+                }
             }
+
+
         }
         // Update departemnt name
         public void UpdateDepartName(int departmentId, string newDepartName)
