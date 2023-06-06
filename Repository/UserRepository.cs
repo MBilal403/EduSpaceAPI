@@ -93,6 +93,43 @@ namespace EduSpaceAPI.Repository
                 IsSuccess = false
             };
         }
+        public async Task<string> GetPassword(ForgotPasswordDto dto)
+        {
+            string query = "SELECT [Password] FROM [dbo].[User] WHERE [Email] = @Email AND [DateOfBirth] = @DateOfBirth";
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Email", dto.Email);
+                    command.Parameters.AddWithValue("@DateOfBirth", dto.dateofbirth);
+
+                    try
+                    {
+                        await connection.OpenAsync();
+                        SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                        if (reader.Read())
+                        {
+                            string password = reader["Password"].ToString();
+                            return password;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+
+                        reader.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Handle the exception appropriately
+                        throw;
+                    }
+                }
+            }
+        }
+
         // Inser user to the data base
         public MyResponse<string> InsertUser(UserModel user)
         {

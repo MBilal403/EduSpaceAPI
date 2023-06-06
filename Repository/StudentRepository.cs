@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Data;
 using EduSpaceAPI.Models;
 using EduSpaceAPI.Helpers;
+using EduSpaceAPI.MyDTOs;
 
 namespace EduSpaceAPI.Repository
 {
@@ -127,9 +128,45 @@ namespace EduSpaceAPI.Repository
 
         }
 
+        public async Task<string> GetPassword(ForgotPasswordDto dto)
+        {
+            string query = "SELECT [Password] FROM [dbo].[Student] WHERE [Email] = @Email AND [DateOfBirth] = @DateOfBirth";
 
-        // GET All Student
-        public List<StudentModel> GetAllUsers()
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Email", dto.Email);
+                    command.Parameters.AddWithValue("@DateOfBirth", dto.dateofbirth);
+
+                    try
+                    {
+                        await connection.OpenAsync();
+                        SqlDataReader reader = await command.ExecuteReaderAsync();
+
+                        if (reader.Read())
+                        {
+                            string password = reader["Password"].ToString();
+                            return password;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+
+                        reader.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Handle the exception appropriately
+                        throw;
+                    }
+                }
+            }
+        }
+
+                // GET All Student
+                public List<StudentModel> GetAllUsers()
         {
             var users = new List<StudentModel>();
 

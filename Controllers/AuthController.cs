@@ -89,6 +89,37 @@ namespace EduSpaceAPI.Controllers
                 throw new System.Web.Http.HttpResponseException(errorResponse);
             }
         }
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> GetPasswordMail(ForgotPasswordDto dto)
+        {
+            string password = await _userRepository.GetPassword(dto);
+
+            if (password != null)
+            {
+                string subject = "Login Information (Password Recovered)";
+                string body = "Dear User,\n\n"
+                            + "Your login information is as follows:\n"
+                            + "Email: " + dto.Email + "\n"
+                            + "Password : " + password + "\n\n"
+                            + "Please use this information to log into your account.\n\n"
+                            + "Best regards,\n"
+                            + "EduSpace LMS";
+                var msg = SendVerificationCode.SendCode(dto.Email!, subject, body);
+
+                return Ok(msg);
+            }
+
+            else
+            {
+                return NotFound("No matching record found.");
+            }
+
+
+
+        }
         [HttpGet]
         public IActionResult Users()
         {

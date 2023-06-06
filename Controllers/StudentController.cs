@@ -1,6 +1,7 @@
 ﻿
 using EduSpaceAPI.Helpers;
 using EduSpaceAPI.Models;
+using EduSpaceAPI.MyDTOs;
 using EduSpaceAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -40,6 +41,37 @@ namespace EduSpaceAPI.Controllers
             }
 
             return Ok(student);
+        }
+
+
+    
+            [HttpPost]
+            public async Task<IActionResult> GetPasswordMail(ForgotPasswordDto dto)
+            {
+                string password = await _studentRepository.GetPassword(dto);
+
+                if (password != null)
+                {
+                string subject = "Login Information (Password Recovered)";
+                string body = "Dear User,\n\n"
+                            + "Your login information is as follows:\n"
+                            + "Email: " + dto.Email + "\n"
+                            +  "Password : "+password + "\n\n"
+                            + "Please use this information to log into your account.\n\n"
+                            + "Best regards,\n"
+                            + "EduSpace LMS";
+                var msg = SendVerificationCode.SendCode(dto.Email!, subject, body);
+
+                return Ok(msg);
+            }
+
+                else
+                {
+                    return NotFound("No matching record found.");
+                }
+            
+         
+
         }
 
 
