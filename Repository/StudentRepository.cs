@@ -154,7 +154,48 @@ namespace EduSpaceAPI.Repository
             return users;
         }
 
+        //
+        public async Task<StudentModel> IsAuthenticateUser(LoginDto model)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
 
+                using (var command = new SqlCommand("SELECT * FROM [dbo].[Student] WHERE [Email] = @Email AND [Password] = @Password", connection))
+                {
+                    command.Parameters.AddWithValue("@Email", model.Email!.ToLower().Trim());
+                    command.Parameters.AddWithValue("@Password", model.Password);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            var student = StudentMapper.MapStudent(reader);
+
+                            return student;
+                        }
+                    }
+                }
+            }
+
+            return null; // No student found
+        }
+        //
+        public async Task<bool> IsEmailRegistered(string email)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                var query = "SELECT COUNT(*) FROM Student WHERE Email = @Email";
+                var command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Email", email);
+
+                var result = await command.ExecuteScalarAsync();
+
+                return (int)result > 0;
+            }
+        }
 
 
 

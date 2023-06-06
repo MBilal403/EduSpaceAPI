@@ -116,7 +116,7 @@ namespace EduSpaceAPI.Repository
                 }
             }
         }
-      
+
         public async Task DeleteSessionAsync(int SessionId)
         {
             using (var connection = new SqlConnection(_connectionString))

@@ -46,19 +46,10 @@ namespace EduSpaceAPI.Controllers
             return new string[] { "value1", "value2" };
         }
 
-        // Post: Auth/UserRole -> with id + Name + desc
-        [HttpPost]
-        public IEnumerable<string> GetAllusers() // For Testing
-        {
-
-           // _logger.LogInformation(signupDto);
-
-            return new string[] { "value1", "value2" };
-        }
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Login(LoginModel loginModel)
+        public IActionResult Login(LoginDto loginModel)
         {
             // _logger.LogInformation(");
             try
@@ -108,26 +99,36 @@ namespace EduSpaceAPI.Controllers
         [HttpGet]
         public IActionResult AdminUsers()
         {
+            try
+            { 
             var users = _userRepository.GetAllUsers();
-
             var searchResults = users.Where(d => d.UserRole == "Admin");
-
             return Ok(searchResults);
+            }catch(Exception ex)
+            {
+              return  StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+
         }
         [HttpGet]
         public IActionResult TeacherUsers()
         {
+            try
+            {
             var users = _userRepository.GetAllUsers();
-
             var searchResults = users.Where(d => d.UserRole == "Teacher");
-
             return Ok(searchResults);
-        }
+        }catch(Exception ex)
+            {
+              return  StatusCode(500, $"An error occurred: {ex.Message}");
+    }
+}
 
 
         [HttpGet("{id}")]
         public MyResponse<UserModel> UserById(int id) 
         {
+
             return _userRepository.GetUserById(id);
         }
 
@@ -281,8 +282,13 @@ namespace EduSpaceAPI.Controllers
 
             return Ok($"File uploaded successfully. File path: {filePath} + {filebyte}");
         }
-      
 
+        [HttpGet]
+        public async Task<IActionResult> CheckEmail(string email)
+        {
+            var isEmailRegistered = await _userRepository.IsEmailRegistered(email);
+            return Ok(isEmailRegistered);
+        }
 
     }
 

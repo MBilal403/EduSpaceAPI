@@ -3,6 +3,7 @@ using EduSpaceAPI.Helpers;
 using EduSpaceAPI.Models;
 using EduSpaceAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -28,18 +29,39 @@ namespace EduSpaceAPI.Controllers
         }
 
 
-        // GET: api/<StudentController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        [HttpPost]
+        public async Task<ActionResult<StudentModel>> Login(LoginDto request)
         {
-            return new string[] { "value1", "value2" };
+            var student = await _studentRepository.IsAuthenticateUser(request);
+
+            if (student == null)
+            {
+                return NotFound("Invalid email or password");
+            }
+
+            return Ok(student);
         }
 
+
+        /* ([FullName]
+           ,[Email]
+         
+           ,[Password]
+           ,[DateOFBirth]
+           ,[Department]
+           ,[Program]
+        ,[City]
+           ,[Address]       these are compulsory
+          
+           ,[ContactNumber]
+           ,[Semester]
+         
+           ,[RollNumber]*/
 
 
 
         [HttpPost]
-        public MyResponse<string> StudentSignup([FromBody] StudentModel user)
+        public MyResponse<string> Register([FromBody] StudentModel user)
         {
             if (user == null)
             {
@@ -93,31 +115,12 @@ namespace EduSpaceAPI.Controllers
            return Ok(users);
         }
 
-
-
-        // GET api/<StudentController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet]
+        public async Task<IActionResult> CheckEmail(string email)
         {
-            return "value";
+            var isEmailRegistered = await _studentRepository.IsEmailRegistered(email);
+            return Ok(isEmailRegistered);
         }
 
-        // POST api/<StudentController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<StudentController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<StudentController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

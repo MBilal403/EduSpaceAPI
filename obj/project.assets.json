@@ -5632,11 +5632,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Muhammad Subhan\\source\\repos\\EduSpaceAPI\\EduSpaceAPI.csproj",
+      "projectUniqueName": "D:\\new\\EduSpaceAPI\\EduSpaceAPI.csproj",
       "projectName": "EduSpaceAPI",
-      "projectPath": "C:\\Users\\Muhammad Subhan\\source\\repos\\EduSpaceAPI\\EduSpaceAPI.csproj",
+      "projectPath": "D:\\new\\EduSpaceAPI\\EduSpaceAPI.csproj",
       "packagesPath": "C:\\Users\\Muhammad Subhan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Muhammad Subhan\\source\\repos\\EduSpaceAPI\\obj\\",
+      "outputPath": "D:\\new\\EduSpaceAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Muhammad Subhan\\AppData\\Roaming\\NuGet\\NuGet.Config",

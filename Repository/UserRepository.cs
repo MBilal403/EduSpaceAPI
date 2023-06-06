@@ -23,9 +23,23 @@ namespace EduSpaceAPI.Repository
             _webHostEnvironment = webHostEnvironment;   
         }
         // Inside UserRepository.cs
+        public async Task<bool> IsEmailRegistered(string email)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = "SELECT COUNT(*) FROM User WHERE Email = @Email";
+                var command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Email", email);
+
+                var result = await command.ExecuteScalarAsync();
+
+                return (int)result > 0;
+            }
+        }
 
         // A methid to check User is Authentic
-        public MyResponse<UserModel> IsAuthenticateUser(LoginModel model)
+        public MyResponse<UserModel> IsAuthenticateUser(LoginDto model)
         {
           
             UserModel user = new UserModel();
@@ -37,7 +51,7 @@ namespace EduSpaceAPI.Repository
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@Email", (model.Email.ToLower() != null) ? model.Email.ToLower() : DBNull.Value);
+                        command.Parameters.AddWithValue("@Email", (model.Email!.ToLower() != null) ? model.Email.ToLower() : DBNull.Value);
                         command.Parameters.AddWithValue("@Password", (model.Password != null) ? model.Password : DBNull.Value);
 
                         connection.Open();

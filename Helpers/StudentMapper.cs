@@ -11,6 +11,7 @@ namespace EduSpaceAPI.Helpers
             student.StudentId = Convert.ToInt32(reader["StudentId"]);
             student.FullName = reader["FullName"].ToString();
             student.Email = reader["Email"].ToString();
+            student.Password = reader["Password"].ToString();
             student.DateOfBirth = Convert.ToDateTime(reader["DateOfBirth"]);
             student.Department = reader["Department"].ToString();
             student.Program = reader["Program"].ToString();

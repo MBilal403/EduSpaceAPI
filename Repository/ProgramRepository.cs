@@ -1,6 +1,7 @@
 ﻿using static EduSpaceAPI.Repository.ProgramRepository;
 using System.Data.SqlClient;
 using EduSpaceAPI.Models;
+using System;
 
 namespace EduSpaceAPI.Repository
 {
@@ -24,54 +25,65 @@ namespace EduSpaceAPI.Repository
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    string query = "INSERT INTO [Program] ([ProgramName], [ProgramShortName], [DepartFId], [Status]) " +
-                                   "VALUES (@ProgramName, @ProgramShortName, @DepartFId, @Status)";
+                    string query = "INSERT INTO [Program] ([ProgramName], [ProgramShortName], [DepartFId], [Status] ,[CreatedAt],[Duration]) " +
+                                   "VALUES (@ProgramName, @ProgramShortName, @DepartFId, @Status, @CreatedAt,@Duration)";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@ProgramName", program.ProgramName);
                         command.Parameters.AddWithValue("@ProgramShortName", program.ProgramShortName);
                         command.Parameters.AddWithValue("@DepartFId", program.DepartFId);
                         command.Parameters.AddWithValue("@Status", program.Status);
+                        command.Parameters.AddWithValue("@CreatedAt", program.CreatedAt);
+                        command.Parameters.AddWithValue("@Duration", program.Duration);
                         command.ExecuteNonQuery();
                     }
                 }
             }
 
-            public ProgramModel? GetProgramById(int id)
+            public IEnumerable<ProgramModel> GetProgramById(int id)
             {
+         
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    string query = "SELECT * FROM [Program] WHERE [ProgramId] = @ProgramId";
+                    string query = "SELECT * FROM [Program] WHERE [DepartFId] = @DepartFId";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        command.Parameters.AddWithValue("@Id", id);
+                        command.Parameters.AddWithValue("@DepartFId", id);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            if (reader.Read())
+                            if (reader.HasRows)
                             {
-                                return new ProgramModel
-                                {
-                                    ProgramId = (int)reader["ProgramId"],
-                                    ProgramName = (string)reader["ProgramName"],
-                                    ProgramShortName = (string)reader["ProgramShortName"],
-                                    DepartFId = (int)reader["DepartFId"],
-                                    Status = (bool)reader["Status"]
-                                };
-                            }
+                                List<ProgramModel> programs = new List<ProgramModel>();
+                                    while (reader.Read())
+                                    {
+                                        programs.Add(new ProgramModel
+                                        {
+
+                                            ProgramId = (int)reader["ProgramId"],
+                                            ProgramName = (string)reader["ProgramName"],
+                                            ProgramShortName = (string)reader["ProgramShortName"],
+                                            DepartFId = (int)reader["DepartFId"],
+                                            Duration = (int)reader["Duration"],
+                                            Status = (bool)reader["Status"],
+                                            CreatedAt = (DateTime)reader["CreatedAt"]
+                                        });
+                                    }
+                            return programs;
+                        }
                         }
                     }
                 }
                 return null;
-            }
-
-            public void UpdateProgram(ProgramModel program)
+        }
+        
+    public void UpdateProgram(ProgramModel program)
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
                     string query = "UPDATE [Program] SET [ProgramName] = @ProgramName, [ProgramShortName] = @ProgramShortName, " +
-                                   "[DepartFId] = @DepartFId, [Status] = @Status WHERE [ProgramId] = @ProgramId";
+                                   "[DepartFId] = @DepartFId, [Status],[Duration] = @Status WHERE [ProgramId] = @ProgramId";
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
                         command.Parameters.AddWithValue("@ProgramName", program.ProgramName);
@@ -79,6 +91,7 @@ namespace EduSpaceAPI.Repository
                         command.Parameters.AddWithValue("@DepartFId", program.DepartFId);
                         command.Parameters.AddWithValue("@Status", program.Status);
                         command.Parameters.AddWithValue("@ProgramId", program.ProgramId);
+                        command.Parameters.AddWithValue("@Duration", program.Duration);
                         command.ExecuteNonQuery();
                     }
                 }
