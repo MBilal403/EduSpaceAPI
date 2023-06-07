@@ -1,4 +1,5 @@
 ﻿using EduSpaceAPI.Helpers;
+using EduSpaceAPI.Models;
 using EduSpaceAPI.Repository;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,47 +14,65 @@ namespace EduSpaceAPI.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly FileManager _fileManager;
         private readonly ILogger<AuthController> _logger;
-        private UserRepository _userRepository;
+        private AnnouncementRepository _announcementRepository;
         private JWTGenerator _jwtGenerator;
 
-        public AnnouncementController(JWTGenerator generator, FileManager fileManager, UserRepository userRepository, IWebHostEnvironment webHostEnvironment, ILogger<AuthController> logger)
+        public AnnouncementController(JWTGenerator generator, FileManager fileManager, AnnouncementRepository announcementRepository, IWebHostEnvironment webHostEnvironment, ILogger<AuthController> logger)
         {
             _jwtGenerator = generator;
             _fileManager = fileManager;
-            _userRepository = userRepository;
+            _announcementRepository = announcementRepository;
             _webHostEnvironment = webHostEnvironment;
             _logger = logger;
         }
-        // GET: api/<AnnouncementController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
 
-        // GET api/<AnnouncementController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
 
-        // POST api/<AnnouncementController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> AddAnnouncement(AnnouncementModel announcement)
         {
+            try
+            {
+                int announcementId = await _announcementRepository.AddAnnouncement(announcement);
+                return Ok(announcementId);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
         }
 
-        // PUT api/<AnnouncementController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpGet("{role}")]
+        public async Task<IActionResult> GetAnnouncementsByRole(string role)
         {
+            try
+            {
+                var announcements = await _announcementRepository.GetAnnouncementsByRole(role);
+                return Ok(announcements);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
         }
 
-        // DELETE api/<AnnouncementController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{announcementId}")]
+        public async Task<IActionResult> DeleteAnnouncement(int announcementId)
         {
+            try
+            {
+                int affectedRows = await _announcementRepository.DeleteAnnouncement(announcementId);
+                if (affectedRows > 0)
+                    return NoContent();
+                else
+                    return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+
         }
     }
+
 }
+
