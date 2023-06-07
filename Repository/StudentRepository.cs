@@ -127,7 +127,18 @@ namespace EduSpaceAPI.Repository
             }
 
         }
+        public async Task<int> GetStudentCount()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
 
+                using (var command = new SqlCommand("SELECT COUNT(*) FROM [dbo].[Student]", connection))
+                {
+                    return (int)await command.ExecuteScalarAsync();
+                }
+            }
+        }
         public async Task<string> GetPassword(ForgotPasswordDto dto)
         {
             string query = "SELECT [Password] FROM [dbo].[Student] WHERE [Email] = @Email AND [DateOfBirth] = @DateOfBirth";

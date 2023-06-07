@@ -16,7 +16,19 @@ namespace EduSpaceAPI.Controllers
         {
             _departmentRepository= departmentRepository;
         }
-
+        [HttpGet]
+        public async Task<IActionResult> GetDepartmentCount()
+        {
+            try
+            {
+                int count = await _departmentRepository.GetDepartmentcount();
+                return Ok(count);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
         // GET: api/<DepartmentController>
         [HttpGet]
         public IEnumerable<DepartmentModel> Departments()

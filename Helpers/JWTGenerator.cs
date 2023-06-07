@@ -27,8 +27,8 @@ namespace EduSpaceAPI.Helpers
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, model.UserId.ToString()), // Add any additional claims as needed
-                    new Claim(ClaimTypes.Email, model.Email), // Add any additional claims as needed
-                    new Claim(ClaimTypes.Role, model.UserRole) // Add any additional claims as needed
+                    new Claim(ClaimTypes.Email, model.Email!), // Add any additional claims as needed
+                    new Claim(ClaimTypes.Role, model.UserRole!) // Add any additional claims as needed
                 }),
                 Expires = DateTime.UtcNow.AddDays(7), // Set token expiration time
                 Issuer = _configuration["JWT:ValidIssuer"],

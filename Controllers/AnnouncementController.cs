@@ -32,7 +32,7 @@ namespace EduSpaceAPI.Controllers
         {
             try
             {
-                int announcementId = await _announcementRepository.AddAnnouncement(announcement);
+                int announcementId = await _announcementRepository.Addannouncement(announcement);
                 return Ok(announcementId);
             }
             catch (Exception ex)
@@ -46,7 +46,7 @@ namespace EduSpaceAPI.Controllers
         {
             try
             {
-                var announcements = await _announcementRepository.GetAnnouncementsByRole(role);
+                var announcements = await _announcementRepository.GetannouncementsByRole(role);
                 return Ok(announcements);
             }
             catch (Exception ex)
@@ -60,7 +60,7 @@ namespace EduSpaceAPI.Controllers
         {
             try
             {
-                int affectedRows = await _announcementRepository.DeleteAnnouncement(announcementId);
+                int affectedRows = await _announcementRepository.Deleteannouncement(announcementId);
                 if (affectedRows > 0)
                     return NoContent();
                 else

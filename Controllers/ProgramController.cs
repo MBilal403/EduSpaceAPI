@@ -17,6 +17,19 @@ namespace EduSpaceAPI.Controllers
             _programRepository = programRepository;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetActiveProgramCount()
+        {
+            try
+            {
+                int count = await _programRepository.GetActiveProgramcount();
+                return Ok(count);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
         [HttpPost]
         public IActionResult AddProgram([FromBody] ProgramModel program)
         {
@@ -77,52 +90,9 @@ namespace EduSpaceAPI.Controllers
             }
         }
 
-        [HttpDelete("programs/{id}")]
-        public IActionResult DeleteProgram(int id)
-        {
-            try
-            {
-                _programRepository.DeleteProgram(id);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
-            }
-        }
+     
 
-
-
-        // GET: api/<ProgramController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<ProgramController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<ProgramController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<ProgramController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<ProgramController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+    
+       
     }
 }

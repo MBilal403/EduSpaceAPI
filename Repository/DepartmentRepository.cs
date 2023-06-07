@@ -42,6 +42,18 @@ namespace EduSpaceAPI.Repository
                 IsSuccess = true
             };
         }
+        public async Task<int> GetDepartmentcount()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                using (var command = new SqlCommand("SELECT COUNT(*) FROM [dbo].[Department] WHERE [Status] = 1", connection))
+                {
+                    return (int)await command.ExecuteScalarAsync();
+                }
+            }
+        }
         // get All Department
         public IEnumerable<DepartmentModel> GetDepartments()
         {

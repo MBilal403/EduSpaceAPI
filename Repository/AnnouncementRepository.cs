@@ -24,7 +24,7 @@ namespace EduSpaceAPI.Repository
             _connectionString = _configuration["ConnectionString:DBx"];
             _webHostEnvironment = webHostEnvironment;
         }
-        public async Task<int> AddAnnouncement(AnnouncementModel announcement)
+        public async Task<int> Addannouncement(AnnouncementModel announcement)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -46,7 +46,7 @@ namespace EduSpaceAPI.Repository
             }
         }
 
-        public async Task<List<AnnouncementModel>> GetAnnouncementsByRole(string role)
+        public async Task<List<AnnouncementModel>> GetannouncementsByRole(string role)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
@@ -81,7 +81,7 @@ namespace EduSpaceAPI.Repository
             }
         }
 
-        public async Task<int> DeleteAnnouncement(int announcementId)
+        public async Task<int> Deleteannouncement(int announcementId)
         {
             using (var connection = new SqlConnection(_connectionString))
             {

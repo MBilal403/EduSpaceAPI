@@ -89,7 +89,19 @@ namespace EduSpaceAPI.Controllers
                 throw new System.Web.Http.HttpResponseException(errorResponse);
             }
         }
-
+        [HttpGet]
+        public async Task<IActionResult> GetTeacherCount()
+        {
+            try
+            {
+                int count = await _userRepository.GetTeachercount();
+                return Ok(count);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
 
 
         [HttpPost]

@@ -47,7 +47,7 @@ namespace EduSpaceAPI.Repository
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    string query = "SELECT UserId,UserRole,Email,FullName  FROM [User] WHERE Email = @Email AND Password = @Password";
+                    string query = "SELECT UserId,UserRole,Email,FullName,ImagePath  FROM [User] WHERE Email = @Email AND Password = @Password";
 
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
@@ -64,6 +64,7 @@ namespace EduSpaceAPI.Repository
                                 user.UserRole = reader.GetString(1);
                                 user.Email = reader.GetString(2);
                                 user.FullName = reader.GetString(3);
+                                user.ImagePath = reader.GetString(4);
                                 return new MyResponse<UserModel>()
                                 {
                                     Response = user,
@@ -92,6 +93,18 @@ namespace EduSpaceAPI.Repository
                 Response = user,
                 IsSuccess = false
             };
+        }
+        public async Task<int> GetTeachercount()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+
+                using (var command = new SqlCommand("SELECT COUNT(*) FROM [dbo].[User] WHERE [UserRole] = 'Teacher'", connection))
+                {
+                    return (int)await command.ExecuteScalarAsync();
+                }
+            }
         }
         public async Task<string> GetPassword(ForgotPasswordDto dto)
         {

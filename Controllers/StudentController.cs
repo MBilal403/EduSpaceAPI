@@ -42,10 +42,22 @@ namespace EduSpaceAPI.Controllers
 
             return Ok(student);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetStudentCount()
+        {
+            try
+            {
+                int count = await _studentRepository.GetStudentCount();
+                return Ok(count);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
 
 
-    
-            [HttpPost]
+        [HttpPost]
             public async Task<IActionResult> GetPasswordMail(ForgotPasswordDto dto)
             {
                 string password = await _studentRepository.GetPassword(dto);

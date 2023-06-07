@@ -19,7 +19,18 @@ namespace EduSpaceAPI.Repository
         }
 
         // Existing code...
+        public async Task<int> GetActiveProgramcount()
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
 
+                using (var command = new SqlCommand("SELECT COUNT(*) FROM [dbo].[Program] WHERE [Status] = 1", connection))
+                {
+                    return (int)await command.ExecuteScalarAsync();
+                }
+            }
+        }
         public void AddProgram(ProgramModel program)
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
