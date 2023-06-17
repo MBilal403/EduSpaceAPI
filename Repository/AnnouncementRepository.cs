@@ -11,8 +11,7 @@ using System.Data.SqlClient;
 
 namespace EduSpaceAPI.Repository
 {
-    [ApiController]
-    [Route("api/[controller]")]
+    
     public class AnnouncementRepository 
     {
         private IConfiguration _configuration;

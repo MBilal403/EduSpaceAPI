@@ -51,7 +51,10 @@ namespace EduSpaceAPI.Repository
                 }
             }
 
-            public IEnumerable<ProgramModel> GetProgramById(int id)
+  
+        
+
+        public IEnumerable<ProgramModel> GetProgramById(int id)
             {
          
                 using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -87,8 +90,8 @@ namespace EduSpaceAPI.Repository
                 }
                 return null;
         }
-        
-    public void UpdateProgram(ProgramModel program)
+       
+        public void UpdateProgram(ProgramModel program)
             {
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {

@@ -28,6 +28,20 @@ namespace EduSpaceAPI.Controllers
             {
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
+        }   
+        
+        [HttpGet]
+        public IEnumerable<DepartmentModel> GetDepartmentPrograms()
+        {
+            try
+            {
+                var count =  _departmentRepository.GetDepartmentPrograms();
+                return count;
+            }
+            catch (Exception ex)
+            {
+                return (IEnumerable<DepartmentModel>)StatusCode(500, $"An error occurred: {ex.Message}");
+            }
         }
         // GET: api/<DepartmentController>
         [HttpGet]

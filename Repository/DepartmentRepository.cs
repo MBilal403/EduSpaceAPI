@@ -12,9 +12,11 @@ namespace EduSpaceAPI.Repository
     {
         private IConfiguration _configuration;
         private string _connectionString;
+        private ProgramRepository _programRepository;
         IWebHostEnvironment _webHostEnvironment;
-        public DepartmentRepository(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        public DepartmentRepository(IConfiguration configuration,ProgramRepository programRepository, IWebHostEnvironment webHostEnvironment)
         {
+            _programRepository = programRepository;
             _configuration = configuration;
             _connectionString = _configuration["ConnectionString:DBx"];
             _webHostEnvironment = webHostEnvironment;
@@ -81,6 +83,48 @@ namespace EduSpaceAPI.Repository
                     }
                 }
             }
+        }
+      
+
+
+
+        // new approach
+        public IEnumerable<DepartmentModel> GetDepartmentPrograms()
+        {
+            List<DepartmentModel> list = new List<DepartmentModel>();
+                  var departments =  GetActiveDepartments();
+            foreach(var department in departments)
+            {
+                IEnumerable<ProgramModel> program  = _programRepository.GetProgramById(department.DepartId);
+                if(program == null)
+                {
+                    list.Add(new DepartmentModel()
+                    {
+                        DepartId = department.DepartId,
+                        DepartName = department.DepartName,
+                        InchargeName = department.InchargeName,
+                        AdminName = department.AdminName,
+                        CreatedAt = department.CreatedAt,
+                        Status = department.Status,
+                        
+                    });
+                }
+                else { 
+                list.Add(new DepartmentModel()
+                {
+                    DepartId = department.DepartId,
+                    DepartName = department.DepartName,
+                    InchargeName = department.InchargeName,
+                    AdminName = department.AdminName,
+                    CreatedAt = department.CreatedAt,
+                    Status = department.Status,
+                    Programs = program.ToList()
+            });
+                }
+            }
+            return list;
+
+
         }
         // Get department only where status is true that department are active
         public IEnumerable<DepartmentModel> GetActiveDepartments()
