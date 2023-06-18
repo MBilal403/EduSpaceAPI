@@ -9,7 +9,7 @@
         public int TeacherFid { get; set; }
         public DateTime TimeTable { get; set; }
         public ProgramModel? Program { get; set; }
-        public CourseModel? Course { get;set; }
+        public List<CourseModel>? Course { get;set; }
         public UserModel? User { get; set; }
     }
 

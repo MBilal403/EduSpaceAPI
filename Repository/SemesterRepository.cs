@@ -31,25 +31,27 @@ namespace EduSpaceAPI.Repository
                 var query = "SELECT * FROM Semester WHERE ProgramFId = @id";
                 var command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@id", id);
-
                 using (var reader = command.ExecuteReader())
                 {
-                    if (reader.Read())
+                    while (reader.Read())
                     {
-                  
                         var semester = new SemesterModel(){
                             SemesterNo = (int)reader["SemesterNo"],
                             ProgramFid = (int)reader["ProgramFid"],
                             CourseFId = (int)reader["CourseFId"],
                             TeacherFid = (int)reader["TeacherFid"],
                             TimeTable = (DateTime)reader["TimeTable"],
-                           
                        
-                    };
+                         };
+
+                        var T = GetAll().Where(t => t.ProgramFid == id && t.SemesterNo == semester.SemesterNo);
+
+
                         var Course = _courseRepository.GetCourseById(semester.CourseFId);
+
                        var  User = _userRepository.GetAllUsers().FirstOrDefault(t => t.UserId == semester.TeacherFid);
-                        var program = _programRepository.GetAllProgramById().FirstOrDefault(t => t.ProgramId == semester.ProgramFid);
-                        semester.Course = Course;
+                        var program = _programRepository.GetAllProgramById().FirstOrDefault(t => t.ProgramId == id);
+                      /*  semester.Course = Course;*/
                         semester.User = User;
                         semester.Program = program; 
 
@@ -57,12 +59,12 @@ namespace EduSpaceAPI.Repository
                         semesterModels.Add(semester);
 
 
-                        return semesterModels;
                     }
+                    
+                        return semesterModels;
                 }
             }
 
-            return null;
         }
 
         public IEnumerable<SemesterModel> GetAll()

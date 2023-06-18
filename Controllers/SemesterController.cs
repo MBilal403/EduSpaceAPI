@@ -10,20 +10,43 @@ namespace EduSpaceAPI.Controllers
     [ApiController]
     public class SemesterController : ControllerBase
     {
+        private ProgramRepository _programRepository;
+        private UserRepository _userRepository;
+        private CourseRepository _courseRepository;
         private SemesterRepository _semesterRepository;
-        public SemesterController(SemesterRepository semesterRepository)
+        public SemesterController(SemesterRepository semesterRepository, ProgramRepository programRepository, CourseRepository courseRepository, UserRepository userRepository)
         {
+            _programRepository = programRepository;
+            _userRepository = userRepository;
+            _courseRepository = courseRepository;
             _semesterRepository = semesterRepository;
         }
         [HttpGet("{id}")]
         public IActionResult GetByProgramId(int id)
         {
-            var semester = _semesterRepository.GetAllSemesterByprogramId(id);
-            if (semester == null)
+            /* var semester = _semesterRepository.GetAllSemesterByprogramId(id);*/
+            var semester = _semesterRepository.GetAll().Where(t=>t.ProgramFid == id);
+            foreach(var s in semester)
+            {
+            var T = semester.Where(t=> t.SemesterNo == s.SemesterNo);
+
+            }
+
+            var v=  semester.Where(t => t.ProgramFid == id).GroupBy(t=>t.SemesterNo);
+            if (semester == null || v == null)
             {
                 return NotFound();
             }
-            return Ok(semester);
+
+           
+      /*      var Course = _courseRepository.GetCourseById(v.CourseFId);
+
+            var User = _userRepository.GetAllUsers().FirstOrDefault(t => t.UserId == v.TeacherFid);
+            var program = _programRepository.GetAllProgramById().FirstOrDefault(t => t.ProgramId == id);
+*/
+
+         
+            return Ok(v);
         }
 
         [HttpGet]
