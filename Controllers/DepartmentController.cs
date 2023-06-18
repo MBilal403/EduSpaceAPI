@@ -16,6 +16,7 @@ namespace EduSpaceAPI.Controllers
         {
             _departmentRepository= departmentRepository;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetDepartmentCount()
         {

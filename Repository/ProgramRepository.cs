@@ -18,6 +18,48 @@ namespace EduSpaceAPI.Repository
             _webHostEnvironment = webHostEnvironment;
         }
 
+
+        public IEnumerable<ProgramModel> GetAllProgramById()
+        {
+
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                string query = "SELECT * FROM [Program] ";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            List<ProgramModel> programs = new List<ProgramModel>();
+                            while (reader.Read())
+                            {
+                                programs.Add(new ProgramModel
+                                {
+                                    ProgramId = (int)reader["ProgramId"],
+                                    ProgramName = (string)reader["ProgramName"],
+                                    ProgramShortName = (string)reader["ProgramShortName"],
+                                    DepartFId = (int)reader["DepartFId"],
+                                    Duration = (int)reader["Duration"],
+                                    Status = (bool)reader["Status"],
+                                    CreatedAt = (DateTime)reader["CreatedAt"]
+                                });
+                            }
+                            return programs;
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
+
+
+
+
+
+
         // Existing code...
         public async Task<int> GetActiveProgramcount()
         {
