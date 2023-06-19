@@ -1,92 +1,63 @@
 ﻿using EduSpaceAPI.Models;
 using System.Data.SqlClient;
-using System.Xml;
 
 namespace EduSpaceAPI.Repository
 {
     public class SemesterRepository
     {
+        private readonly string _connectionString;
         private IConfiguration _configuration;
-        private string _connectionString;
-        private ProgramRepository _programRepository;
-        private UserRepository _userRepository;
-        private CourseRepository _courseRepository;
         IWebHostEnvironment _webHostEnvironment;
-        public SemesterRepository(IConfiguration configuration,ProgramRepository programRepository,CourseRepository courseRepository,UserRepository userRepository, IWebHostEnvironment webHostEnvironment)
+
+        public SemesterRepository(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
-            _programRepository = programRepository;
-            _userRepository = userRepository;
-            _courseRepository  = courseRepository;
             _configuration = configuration;
             _connectionString = _configuration["ConnectionString:DBx"];
             _webHostEnvironment = webHostEnvironment;
         }
-        // take the program id  and return its all semester detail
-        public IEnumerable<SemesterModel> GetAllSemesterByprogramId(int id)
-        {
-            List<SemesterModel> semesterModels = new List<SemesterModel>(); 
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-                var query = "SELECT * FROM Semester WHERE ProgramFId = @id";
-                var command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@id", id);
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        var semester = new SemesterModel(){
-                            SemesterNo = (int)reader["SemesterNo"],
-                            ProgramFid = (int)reader["ProgramFid"],
-                            CourseFId = (int)reader["CourseFId"],
-                            TeacherFid = (int)reader["TeacherFid"],
-                            TimeTable = (DateTime)reader["TimeTable"],
-                       
-                         };
-
-                        var T = GetAll().Where(t => t.ProgramFid == id && t.SemesterNo == semester.SemesterNo);
-
-
-                        var Course = _courseRepository.GetCourseById(semester.CourseFId);
-
-                       var  User = _userRepository.GetAllUsers().FirstOrDefault(t => t.UserId == semester.TeacherFid);
-                        var program = _programRepository.GetAllProgramById().FirstOrDefault(t => t.ProgramId == id);
-                      /*  semester.Course = Course;*/
-                        semester.User = User;
-                        semester.Program = program; 
-
-
-                        semesterModels.Add(semester);
-
-
-                    }
-                    
-                        return semesterModels;
-                }
-            }
-
-        }
-
         public IEnumerable<SemesterModel> GetAll()
         {
-            var semesters = new List<SemesterModel>();
-
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var query = "SELECT * FROM Semester";
-                var command = new SqlCommand(query, connection);
-
-                using (var reader = command.ExecuteReader())
+                var command = new SqlCommand("SELECT SemesterId, SemesterName FROM Semester", connection);
+                var reader = command.ExecuteReader();
+                var semesters = new List<SemesterModel>();
+                while (reader.Read())
                 {
-                    while (reader.Read())
+                    var semester = new SemesterModel
                     {
-                        semesters.Add(MapSemesterFromReader(reader));
-                    }
+                        SemesterId = reader.GetInt32(0),
+                        SemesterName = reader.GetString(1)
+                    };
+                    semesters.Add(semester);
                 }
-            }
 
-            return semesters;
+                return semesters;
+            }
+        }
+
+        public SemesterModel GetById(int id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                var command = new SqlCommand("SELECT SemesterId, SemesterName FROM Semester WHERE Id = @Id", connection);
+                command.Parameters.AddWithValue("@Id", id);
+                var reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    var semester = new SemesterModel
+                    {
+                        SemesterId = reader.GetInt32(0),
+                        SemesterName = reader.GetString(1)
+                    };
+                    return semester;
+                }
+
+                return null;
+            }
         }
 
         public void Add(SemesterModel semester)
@@ -94,14 +65,8 @@ namespace EduSpaceAPI.Repository
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var query = "INSERT INTO Semester (SemesterNo, ProgramFid, CourseFId, TeacherFid, TimeTable) VALUES (@SemesterNo, @ProgramFid, @CourseFId, @TeacherFid, @TimeTable)";
-                var command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@SemesterNo", semester.SemesterNo);
-                command.Parameters.AddWithValue("@ProgramFid", semester.ProgramFid);
-                command.Parameters.AddWithValue("@CourseFId", semester.CourseFId);
-                command.Parameters.AddWithValue("@TeacherFid", semester.TeacherFid);
-                command.Parameters.AddWithValue("@TimeTable", semester.TimeTable);
-
+                var command = new SqlCommand("INSERT INTO Semester (SemesterName) VALUES (@SemesterName)", connection);
+                command.Parameters.AddWithValue("@SemesterName", semester.SemesterName);
                 command.ExecuteNonQuery();
             }
         }
@@ -111,14 +76,9 @@ namespace EduSpaceAPI.Repository
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var query = "UPDATE Semester SET ProgramFid = @ProgramFid, CourseFId = @CourseFId, TeacherFid = @TeacherFid, TimeTable = @TimeTable WHERE SemesterNo = @SemesterNo";
-                var command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@ProgramFid", semester.ProgramFid);
-                command.Parameters.AddWithValue("@CourseFId", semester.CourseFId);
-                command.Parameters.AddWithValue("@TeacherFid", semester.TeacherFid);
-                command.Parameters.AddWithValue("@TimeTable", semester.TimeTable);
-                command.Parameters.AddWithValue("@SemesterNo", semester.SemesterNo);
-
+                var command = new SqlCommand("UPDATE Semester SET SemesterName = @SemesterName WHERE SemesterId = @Id", connection);
+                command.Parameters.AddWithValue("@SemesterName", semester.SemesterName);
+                command.Parameters.AddWithValue("@Id", semester.SemesterId);
                 command.ExecuteNonQuery();
             }
         }
@@ -128,27 +88,10 @@ namespace EduSpaceAPI.Repository
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var query = "DELETE FROM Semester WHERE SemesterNo = @SemesterNo";
-                var command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@SemesterNo", id);
-
+                var command = new SqlCommand("DELETE FROM Semester WHERE SemesterId = @Id", connection);
+                command.Parameters.AddWithValue("@Id", id);
                 command.ExecuteNonQuery();
             }
         }
-
-        private SemesterModel MapSemesterFromReader(SqlDataReader reader)
-        {
-            return new SemesterModel
-            {
-                SemesterNo = (int)reader["SemesterNo"],
-                ProgramFid = (int)reader["ProgramFid"],
-                CourseFId = (int)reader["CourseFId"],
-                TeacherFid = (int)reader["TeacherFid"],
-                TimeTable = (DateTime)reader["TimeTable"]
-            };
-        }
-
-
-
     }
 }

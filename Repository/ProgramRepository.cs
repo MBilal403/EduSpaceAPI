@@ -9,13 +9,16 @@ namespace EduSpaceAPI.Repository
     {
           private readonly string _connectionString;
         private IConfiguration _configuration;
-        IWebHostEnvironment _webHostEnvironment;
+   
+        SPRepository _spRepository;
 
-        public ProgramRepository(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        public ProgramRepository(IConfiguration configuration,SPRepository sPRepository, IWebHostEnvironment webHostEnvironment)
         {
             _configuration = configuration;
+           
+            _spRepository = sPRepository;
             _connectionString = _configuration["ConnectionString:DBx"];
-            _webHostEnvironment = webHostEnvironment;
+            
         }
 
 
@@ -90,6 +93,18 @@ namespace EduSpaceAPI.Repository
                         command.Parameters.AddWithValue("@Duration", program.Duration);
                         command.ExecuteNonQuery();
                     }
+                var id = GetAllProgramById().FirstOrDefault(t => t.ProgramName == program.ProgramName);
+                    for (int i = 1; i <= program.Duration; i++)
+                {
+                    _spRepository.Add(new SPModel()
+                    {
+                        SemesterFId = i,
+                        ProgramFId = id.ProgramId,
+                    }) ;
+                }
+               
+
+
                 }
             }
 

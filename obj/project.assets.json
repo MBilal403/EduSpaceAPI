@@ -5627,19 +5627,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Muhammad Subhan\\.nuget\\packages\\": {}
+    "C:\\Users\\asifa\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Moodser\\EduSpaceAPI\\EduSpaceAPI.csproj",
+      "projectUniqueName": "D:\\Bilal\\EduSpaceAPI\\EduSpaceAPI.csproj",
       "projectName": "EduSpaceAPI",
-      "projectPath": "D:\\Moodser\\EduSpaceAPI\\EduSpaceAPI.csproj",
-      "packagesPath": "C:\\Users\\Muhammad Subhan\\.nuget\\packages\\",
-      "outputPath": "D:\\Moodser\\EduSpaceAPI\\obj\\",
+      "projectPath": "D:\\Bilal\\EduSpaceAPI\\EduSpaceAPI.csproj",
+      "packagesPath": "C:\\Users\\asifa\\.nuget\\packages\\",
+      "outputPath": "D:\\Bilal\\EduSpaceAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Muhammad Subhan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\asifa\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5647,6 +5647,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\sdk\\7.0.304\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -5713,7 +5714,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.203\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.304\\RuntimeIdentifierGraph.json"
       }
     }
   },

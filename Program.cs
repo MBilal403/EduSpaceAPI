@@ -19,6 +19,9 @@ builder.Services.AddTransient<SessionRepository>();
 builder.Services.AddTransient<AnnouncementRepository>();  
 builder.Services.AddTransient<CourseRepository>();  
 builder.Services.AddTransient<SemesterRepository>();  
+builder.Services.AddTransient<SPRepository>();  
+builder.Services.AddTransient<SPCourseRepository>();  
+ 
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

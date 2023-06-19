@@ -138,6 +138,12 @@ namespace EduSpaceAPI.Controllers
             var users = _userRepository.GetAllUsers();
             return Ok(users);
         }
+        [HttpGet]
+        public IActionResult GetTeacher()
+        {
+            var users = _userRepository.GetAllUsers();
+            return Ok(users.Where(t=>t.UserRole=="Teacher"));
+        }
 
         [HttpGet]
         public IActionResult AdminUsers()
