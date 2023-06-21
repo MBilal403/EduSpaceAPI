@@ -51,6 +51,12 @@ namespace EduSpaceAPI.Controllers
             var data  =  _departmentRepository.GetDepartments();
             return data;
         }
+        [HttpGet]
+        public IEnumerable<DepartmentModel> ActiveDepartment()
+        {
+            var data = _departmentRepository.GetDepartments();
+            return data.Where(t=>t.Status == true);
+        }
         // GET: api/<DepartmentController>
         [HttpGet("{id}")]
         public IEnumerable<DepartmentModel> DepartmentById(int id)

@@ -42,17 +42,40 @@ namespace EduSpaceAPI.Controllers
             return Ok(result);
 
         }
-/*
-        [HttpGet("{id}")]
-        public ActionResult<SPCourseModel> Get(int id)
+        [NonAction]
+        public List<MySPCourseModel> MyGet(int id)
         {
-            var spCourse = _spCourseRepository.GetById(id);
-            if (spCourse == null)
+            var spCourseList = _spCourseRepository.GetAll();
+            var kist = spCourseList.Where(t => t.SPFId == id);
+
+            List<MySPCourseModel> result = new List<MySPCourseModel>();
+            foreach (SPCourseModel spCourse in kist)
             {
-                return NotFound();
+                var course = _courseRepository.GetCourseById(spCourse.CourseFId);
+                var teacher = _userRepository.GetAllUsers().FirstOrDefault(t => t.UserRole == "Teacher" && t.UserId == spCourse.UserFId);
+                var SPCourseid = spCourse.SPCourseId;
+                result.Add(new MySPCourseModel()
+                {
+                    Course = course,
+                    SPCourseId = SPCourseid,
+                    User = teacher!.FullName
+                }); 
             }
-            return Ok(spCourse);
-        }*/
+
+            return result;
+
+        }
+        /*
+                [HttpGet("{id}")]
+                public ActionResult<SPCourseModel> Get(int id)
+                {
+                    var spCourse = _spCourseRepository.GetById(id);
+                    if (spCourse == null)
+                    {
+                        return NotFound();
+                    }
+                    return Ok(spCourse);
+                }*/
 
         [HttpPost]
         public ActionResult AddCourse(SPCourseModel spCourse)

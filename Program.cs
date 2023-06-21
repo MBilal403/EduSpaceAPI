@@ -21,6 +21,7 @@ builder.Services.AddTransient<CourseRepository>();
 builder.Services.AddTransient<SemesterRepository>();  
 builder.Services.AddTransient<SPRepository>();  
 builder.Services.AddTransient<SPCourseRepository>();  
+builder.Services.AddTransient<SPCourseController>();  
  
 
 builder.Services.AddControllers();

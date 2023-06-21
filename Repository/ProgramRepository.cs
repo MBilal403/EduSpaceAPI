@@ -20,7 +20,41 @@ namespace EduSpaceAPI.Repository
             _connectionString = _configuration["ConnectionString:DBx"];
             
         }
+        public List<ProgramModel> GetAllPrograms()
+        {
+            List<ProgramModel> programs = new List<ProgramModel>();
 
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                string query = "SELECT * FROM [dbo].[Program]";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        ProgramModel program = new ProgramModel
+                        {
+                            ProgramId = Convert.ToInt32(reader["ProgramId"]),
+                            ProgramName = reader["ProgramName"].ToString(),
+                            ProgramShortName = reader["ProgramShortName"].ToString(),
+                            DepartFId = Convert.ToInt32(reader["DepartFId"]),
+                            Status = Convert.ToBoolean(reader["Status"]),
+                            Duration = Convert.ToInt32(reader["Duration"]),
+                            CreatedAt = Convert.ToDateTime(reader["CreatedAt"])
+                        };
+
+                        programs.Add(program);
+                    }
+
+                    reader.Close();
+                }
+            }
+
+            return programs;
+        }
 
         public IEnumerable<ProgramModel> GetAllProgramById()
         {

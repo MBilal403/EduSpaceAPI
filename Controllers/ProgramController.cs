@@ -30,6 +30,13 @@ namespace EduSpaceAPI.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+
+        [HttpGet]
+        public IActionResult GetAllPrograms()
+        {
+            var programs = _programRepository.GetAllPrograms();
+            return Ok(programs);
+        }
         [HttpPost]
         public IActionResult AddProgram([FromBody] ProgramModel program)
         {

@@ -27,23 +27,25 @@ namespace EduSpaceAPI.Repository
 
                 SqlCommand command = new SqlCommand("SELECT * FROM Course", connection);
                 SqlDataReader reader = command.ExecuteReader();
-
-                while (reader.Read())
+                if (reader.HasRows)
                 {
-                    var course = new CourseModel
+                    while (reader.Read())
                     {
-                        CourseId =(int)reader["CourseId"],
-                        CourseCode = reader["CourseCode"].ToString(),
-                        CourseTitle = reader["CourseTitle"].ToString(),
-                        CourseCreditHours = (int)reader["CourseCreditHours"],
-                        DepartmentFId = (int)reader["DepartmentFId"]
-                    };
-                    var data = _departmentRepository.GetDepartments();
-                    var searchResults = data.FirstOrDefault(d => d.DepartId == course.DepartmentFId);
-                    course.DepartName = searchResults!.DepartName;   
-             
+                        var course = new CourseModel
+                        {
+                            CourseId = (int)reader["CourseId"],
+                            CourseCode = reader["CourseCode"].ToString(),
+                            CourseTitle = reader["CourseTitle"].ToString(),
+                            CourseCreditHours = (int)reader["CourseCreditHours"],
+                            DepartmentFId = (int)reader["DepartmentFId"]
+                        };
+                        var data = _departmentRepository.GetDepartments();
+                        var searchResults = data.FirstOrDefault(d => d.DepartId == course.DepartmentFId);
+                        course.DepartName = searchResults!.DepartName;
 
-                    courses.Add(course);
+
+                        courses.Add(course);
+                    }
                 }
 
                 reader.Close();

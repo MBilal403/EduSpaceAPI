@@ -38,6 +38,30 @@ namespace EduSpaceAPI.Repository
                 return spList;
             }
         }
+        public IEnumerable<SPModel> MyGetAll(int id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                var command = new SqlCommand("SELECT SPId, ProgramFId, SemesterFId FROM SP  WHERE ProgramFId = @SPId", connection);
+                command.Parameters.AddWithValue("@SPId", id);
+                var reader = command.ExecuteReader();
+
+                var spList = new List<SPModel>();
+                while (reader.Read())
+                {
+                    var sp = new SPModel
+                    {
+                        SPId = reader.GetInt32(0),
+                        ProgramFId = reader.GetInt32(1),
+                        SemesterFId = reader.GetInt32(2)
+                    };
+                    spList.Add(sp);
+                }
+
+                return spList;
+            }
+        }
 
         public SPModel GetById(int id)
         {
